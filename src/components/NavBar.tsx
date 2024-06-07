@@ -1,6 +1,10 @@
 import {Link} from "react-router-dom";
+import {UserContext} from "../contexts/UserContext.tsx";
+import {useContext, useState} from "react";
 
 export const NavBar = () => {
+    const currentUserContext = useContext(UserContext);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     return (
         <nav className="bg-gray-100 p-4 flex justify-between items-center">
@@ -19,7 +23,35 @@ export const NavBar = () => {
                 </Link>
             </div>
             <div className="flex justify-end">
-                <Link to="/signin" className="text-black hover:bg-gray-200 p-2 rounded">Sign In</Link>
+                {currentUserContext && currentUserContext.user &&
+                    <div className="rounded hover:cursor-pointer"
+                         onMouseEnter={() => setIsProfileOpen(true)}
+                         onMouseLeave={() => setIsProfileOpen(false)}>
+                        <div className="text-black hover:bg-gray-200 p-2 rounded">
+                            {currentUserContext.user.display_name}
+                        </div>
+                        {isProfileOpen && (
+                            <div className="absolute bg-white border border-gray-300 py-2 rounded shadow-lg z-10">
+                                <Link
+                                    to={`/profile`}
+                                    key="profile"
+                                    className="block px-4 py-2 hover:bg-gray-200"
+                                >
+                                    Profile
+                                </Link>
+                                <Link
+                                    to={`/signout`}
+                                    key="signout"
+                                    className="block px-4 py-2 hover:bg-gray-200"
+                                    onClick={() => setIsProfileOpen(false)}
+                                >
+                                    Sign Out
+                                </Link>
+                            </div>
+                        )}
+                    </div>}
+                {currentUserContext && !currentUserContext.user &&
+                    <Link to="/signin" className="text-black hover:bg-gray-200 p-2 rounded">Sign In</Link>}
             </div>
         </nav>
     );
