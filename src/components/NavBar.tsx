@@ -15,6 +15,9 @@ export const NavBar = () => {
                 <Link to="/" className="ml-8 text-black hover:bg-gray-200 p-2 rounded">
                     Home
                 </Link>
+                <Link to="/users" className="text-black hover:bg-gray-200 p-2 rounded">
+                    Users
+                </Link>
                 <Link to="/groups" className="text-black hover:bg-gray-200 p-2 rounded">
                     Groups
                 </Link>
