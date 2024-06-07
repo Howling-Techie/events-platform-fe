@@ -62,3 +62,42 @@ export const updateUser = async (user: UserInterface, accessToken: string): Prom
         ...config,
     });
 };
+
+export const updateUserNote = async (username: string, note: string, accessToken: string): Promise<{
+    user: UserInterface
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'patch',
+        url: `/users/${username}/note`,
+        data: {note},
+        ...config,
+    });
+};
+
+export const followUser = async (username: string, accessToken: string): Promise<{ user: UserInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/users/${username}/follow`,
+        ...config,
+    });
+};
+
+export const unfollowUser = async (username: string, accessToken: string): Promise<{ user: UserInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'delete',
+        url: `/users/${username}/follow`,
+        ...config,
+    });
+};
