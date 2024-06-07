@@ -27,11 +27,11 @@ const registerUser = async (username: string, displayName: string, email: string
     });
     return handleResponse(response);
 };
-const refreshToken = async (refreshToken: string) => {
+const refreshTokens = async (accessToken: string, refreshToken: string) => {
     const response = await fetch(`${baseURL}/auth/refresh`, {
         method: "POST",
         headers,
-        body: JSON.stringify({refreshToken})
+        body: JSON.stringify({accessToken, refreshToken})
     });
     return handleResponse(response);
 };
@@ -39,5 +39,5 @@ const refreshToken = async (refreshToken: string) => {
 export {
     signUserIn,
     registerUser,
-    refreshToken
+    refreshTokens
 };

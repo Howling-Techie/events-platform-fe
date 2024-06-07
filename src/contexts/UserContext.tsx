@@ -1,5 +1,5 @@
 import {createContext, ReactNode, useEffect, useState} from "react";
-import {registerUser, signUserIn} from "../services/UserManager.js";
+import {refreshTokens, registerUser, signUserIn} from "../services/UserManager.js";
 import User from "../interfaces/User.ts";
 
 interface UserContextType {
@@ -9,6 +9,7 @@ interface UserContextType {
     setUser: (user: User | null) => void,
     setAccessToken: (accessToken: string | null) => void,
     setRefreshToken: (refreshToken: string | null) => void,
+    checkTokenStatus: () => void,
     register: (username: string, displayName: string, password: string, email: string) => Promise<{
         success: boolean,
         message: string
@@ -30,7 +31,8 @@ const UserProvider = ({children}: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [refreshToken, setRefreshToken] = useState<string | null>(null);
-
+    const [tokenExpiration, setTokenExpiration] = useState<{ auth: number, refresh: number } | null>(null);
+    // Get stored tokens on load
     useEffect(() => {
         const userJson = localStorage.getItem("user");
         const storedUser: User = userJson ? JSON.parse(userJson) : null;
@@ -44,6 +46,7 @@ const UserProvider = ({children}: { children: ReactNode }) => {
         }
     }, []);
 
+    // Update stored tokens
     useEffect(() => {
         if (user && accessToken && refreshToken) {
             localStorage.setItem("user", JSON.stringify(user));
@@ -51,6 +54,17 @@ const UserProvider = ({children}: { children: ReactNode }) => {
             localStorage.setItem("refreshToken", refreshToken);
         }
     }, [user, accessToken, refreshToken]);
+
+    // Refresh tokens if they have expired
+    useEffect(() => {
+        if (tokenExpiration && tokenExpiration.auth < Date.now()) {
+            if (accessToken && refreshToken)
+                refreshTokens(accessToken, refreshToken).then((data) => {
+                    setAccessToken(data.accessToken);
+                    setRefreshToken(data.refreshToken);
+                }, () => signOut());
+        }
+    },);
 
     const register = async (username: string, displayName: string, password: string, email: string): Promise<{
         success: boolean,
@@ -75,11 +89,11 @@ const UserProvider = ({children}: { children: ReactNode }) => {
         success: boolean
     }> => {
         const data = await signUserIn(username, password);
-        console.log(data);
         if (data.user) {
             setUser(data.user);
             setAccessToken(data.tokens.accessToken);
             setRefreshToken(data.tokens.refreshToken);
+            setTokenExpiration(data.expiration);
             return {success: true};
         } else {
             return {success: false, message: data.msg};
@@ -96,6 +110,16 @@ const UserProvider = ({children}: { children: ReactNode }) => {
         localStorage.removeItem("refreshToken");
     };
 
+    const checkTokenStatus = () => {
+        if (tokenExpiration && tokenExpiration.auth < Date.now()) {
+            if (accessToken && refreshToken)
+                refreshTokens(accessToken, refreshToken).then((data) => {
+                    setAccessToken(data.accessToken);
+                    setRefreshToken(data.refreshToken);
+                }, () => signOut());
+        }
+    }
+
     return (
         <UserContext.Provider
             value={{
@@ -105,6 +129,7 @@ const UserProvider = ({children}: { children: ReactNode }) => {
                 setUser,
                 setAccessToken,
                 setRefreshToken,
+                checkTokenStatus,
                 register,
                 signIn,
                 signOut
