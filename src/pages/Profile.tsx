@@ -1,11 +1,11 @@
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
-import User from "../interfaces/User.ts";
+import UserInterface from "../interfaces/UserInterface.ts";
 import {getUser, updateUser} from "../services/API.ts";
 
 export const Profile = () => {
     const currentUserContext = useContext(UserContext);
-    const [user, setUser] = useState<User>();
+    const [user, setUser] = useState<UserInterface>();
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
 

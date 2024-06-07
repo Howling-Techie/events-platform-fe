@@ -1,12 +1,12 @@
 import {createContext, ReactNode, useEffect, useState} from "react";
 import {refreshTokens, registerUser, signUserIn} from "../services/UserManager.js";
-import User from "../interfaces/User.ts";
+import UserInterface from "../interfaces/UserInterface.ts";
 
 interface UserContextType {
-    user: User | null,
+    user: UserInterface | null,
     accessToken: string | null,
     refreshToken: string | null,
-    setUser: (user: User | null) => void,
+    setUser: (user: UserInterface | null) => void,
     setAccessToken: (accessToken: string | null) => void,
     setRefreshToken: (refreshToken: string | null) => void,
     checkTokenStatus: () => void,
@@ -28,14 +28,14 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | null>(null);
 
 const UserProvider = ({children}: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserInterface | null>(null);
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [refreshToken, setRefreshToken] = useState<string | null>(null);
     const [tokenExpiration, setTokenExpiration] = useState<{ auth: number, refresh: number } | null>(null);
     // Get stored tokens on load
     useEffect(() => {
         const userJson = localStorage.getItem("user");
-        const storedUser: User = userJson ? JSON.parse(userJson) : null;
+        const storedUser: UserInterface = userJson ? JSON.parse(userJson) : null;
         const storedAccessToken = localStorage.getItem("accessToken");
         const storedRefreshToken = localStorage.getItem("refreshToken");
 

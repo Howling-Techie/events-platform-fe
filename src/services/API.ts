@@ -1,5 +1,5 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import User from "../interfaces/User.ts";
+import UserInterface from "../interfaces/UserInterface.ts";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -26,7 +26,7 @@ const makeRequest = async (config: AxiosRequestConfig) => {
     }
 };
 
-export const getUsers = async (accessToken?: string): Promise<{ users: User[] }> => {
+export const getUsers = async (accessToken?: string): Promise<{ users: UserInterface[] }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
         : {};
@@ -38,7 +38,7 @@ export const getUsers = async (accessToken?: string): Promise<{ users: User[] }>
     });
 };
 
-export const getUser = async (username: string, accessToken?: string): Promise<{ user: User }> => {
+export const getUser = async (username: string, accessToken?: string): Promise<{ user: UserInterface }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
         : {};
@@ -50,7 +50,7 @@ export const getUser = async (username: string, accessToken?: string): Promise<{
     });
 };
 
-export const updateUser = async (user: User, accessToken: string): Promise<{ user: User }> => {
+export const updateUser = async (user: UserInterface, accessToken: string): Promise<{ user: UserInterface }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
         : {};
