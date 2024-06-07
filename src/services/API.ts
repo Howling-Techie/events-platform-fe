@@ -37,3 +37,28 @@ export const getUsers = async (accessToken?: string): Promise<{ users: User[] }>
         ...config,
     });
 };
+
+export const getUser = async (username: string, accessToken?: string): Promise<{ user: User }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/users/${username}`,
+        ...config,
+    });
+};
+
+export const updateUser = async (user: User, accessToken: string): Promise<{ user: User }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'patch',
+        url: `/users/${user.username}`,
+        data: user,
+        ...config,
+    });
+};
