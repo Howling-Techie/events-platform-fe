@@ -38,11 +38,14 @@ const UserProvider = ({children}: { children: ReactNode }) => {
         const storedUser: UserInterface = userJson ? JSON.parse(userJson) : null;
         const storedAccessToken = localStorage.getItem("accessToken");
         const storedRefreshToken = localStorage.getItem("refreshToken");
+        const tokenExpirationJson = localStorage.getItem("tokenExpiration");
+        const storedTokenExpiration = tokenExpirationJson ? JSON.parse(tokenExpirationJson) : null;
 
         if (storedUser && storedAccessToken && storedRefreshToken) {
             setUser(storedUser);
             setAccessToken(storedAccessToken);
             setRefreshToken(storedRefreshToken);
+            setTokenExpiration(storedTokenExpiration);
         }
     }, []);
 
@@ -52,8 +55,9 @@ const UserProvider = ({children}: { children: ReactNode }) => {
             localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("refreshToken", refreshToken);
+            localStorage.setItem("tokenExpiration", JSON.stringify(tokenExpiration))
         }
-    }, [user, accessToken, refreshToken]);
+    }, [user, accessToken, refreshToken, tokenExpiration]);
 
     // Refresh tokens if they have expired
     useEffect(() => {
@@ -62,6 +66,7 @@ const UserProvider = ({children}: { children: ReactNode }) => {
                 refreshTokens(accessToken, refreshToken).then((data) => {
                     setAccessToken(data.accessToken);
                     setRefreshToken(data.refreshToken);
+                    setTokenExpiration(data.expiration);
                 }, () => signOut());
         }
     },);
@@ -104,10 +109,12 @@ const UserProvider = ({children}: { children: ReactNode }) => {
         setUser(null);
         setAccessToken(null);
         setRefreshToken(null);
+        setTokenExpiration(null);
 
         localStorage.removeItem("user");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("tokenExpiration");
     };
 
     const checkTokenStatus = () => {
@@ -116,6 +123,7 @@ const UserProvider = ({children}: { children: ReactNode }) => {
                 refreshTokens(accessToken, refreshToken).then((data) => {
                     setAccessToken(data.accessToken);
                     setRefreshToken(data.refreshToken);
+                    setTokenExpiration(data.expiration);
                 }, () => signOut());
         }
     }
