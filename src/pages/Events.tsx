@@ -20,7 +20,15 @@ export const Events = () => {
 
     return (
         <>
-            <h1 className="text-2xl font-bold">Events</h1>
+            <div className="flex flex-row space-x-2 align-middle">
+                <h1 className="flex items-center mb-1 text-2xl font-bold">Events</h1>
+                <a
+                    href={`/events/new`}
+                    className="flex m-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                >
+                    Create an Event
+                </a>
+            </div>
             {events.length === 0 &&
                 <div>Loading Events</div>}
             {events &&

@@ -232,3 +232,23 @@ export const leaveEvent = async (id: number, accessToken: string): Promise<{
         ...config,
     });
 };
+
+export const createEvent = async (event: {
+    title: string,
+    description: string,
+    location: string,
+    start_time: string,
+    visibility: number,
+    group_id: number
+}, accessToken: string): Promise<{ event: EventInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/events`,
+        data: event,
+        ...config,
+    });
+};
