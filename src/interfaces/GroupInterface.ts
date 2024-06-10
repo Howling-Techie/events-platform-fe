@@ -6,6 +6,7 @@ export default interface GroupInterface {
     about: string,
     avatar: string | undefined,
     visibility: number,
+    owner_id: number,
     owner: UserInterface,
     user_access_level: number | undefined
 }
