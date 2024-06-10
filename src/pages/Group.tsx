@@ -9,12 +9,25 @@ export const Group = () => {
     const {group_id} = useParams();
 
     const [group, setGroup] = useState<GroupInterface>();
-
+    const [visibility, setVisibility] = useState("");
     useEffect(() => {
         if (currentUserContext && currentUserContext.accessToken && group_id) {
             currentUserContext.checkTokenStatus();
             getGroup(+group_id, currentUserContext.accessToken)
-                .then(data => setGroup(data.group))
+                .then(data => {
+                    setGroup(data.group);
+                    switch (data.group.visibility) {
+                        case 0:
+                            setVisibility("📖");
+                            break;
+                        case 1:
+                            setVisibility("📨");
+                            break;
+                        case 2:
+                            setVisibility("🔒");
+                            break;
+                    }
+                })
                 .catch(error => console.error("Error fetching user", error));
         }
     }, [currentUserContext, group_id]);
