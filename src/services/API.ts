@@ -150,3 +150,20 @@ export const leaveGroup = async (id: number, accessToken: string): Promise<{ gro
         ...config,
     });
 };
+
+export const createGroup = async (group: {
+    name: string,
+    about: string,
+    visibility: number
+}, accessToken: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/groups`,
+        data: group,
+        ...config,
+    });
+};
