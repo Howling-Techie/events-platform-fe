@@ -12,6 +12,7 @@ import {NewEvent} from "./pages/NewEvent.tsx";
 import {Profile} from "./pages/Profile.tsx";
 import {User} from "./pages/User.tsx";
 import {Users} from "./pages/Users.tsx";
+import {EditEvent} from "./pages/EditEvent.tsx";
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
                     <Route path="/events" element={<Events/>}/>
                     <Route path="/events/new" element={<NewEvent/>}/>
                     <Route path="/events/:event_id" element={<Event/>}/>
+                    <Route path="/events/:event_id/edit" element={<EditEvent/>}/>
                     <Route path="/users" element={<Users/>}/>
                     <Route path="/users/:username" element={<User/>}/>
                     <Route path="/profile" element={<Profile/>}/>
