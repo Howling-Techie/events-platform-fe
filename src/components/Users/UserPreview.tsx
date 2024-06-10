@@ -8,7 +8,7 @@ export const UserPreview = ({user}: UserPreviewProps) => {
     return (
         <a
             className="border rounded-lg p-4 flex flex-col items-center bg-white shadow-md cursor-pointer"
-            href={`users/${user.username}`}
+            href={`/users/${user.username}`}
         >
             <div className="flex items-center mb-4">
                 {user.avatar ? (

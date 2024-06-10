@@ -51,6 +51,18 @@ export const getUser = async (username: string, accessToken?: string): Promise<{
     });
 };
 
+export const getUserGroups = async (username: string, accessToken?: string): Promise<{ groups: GroupInterface[] }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/users/${username}/groups`,
+        ...config,
+    });
+};
+
 export const getGroups = async (accessToken?: string): Promise<{ groups: GroupInterface[] }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)

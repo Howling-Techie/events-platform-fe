@@ -8,7 +8,7 @@ export const GroupPreview = ({group}: GroupPreviewProps) => {
     return (
         <a
             className="border rounded-lg p-4 flex flex-col items-center bg-white shadow-md cursor-pointer"
-            href={`groups/${group.id}`}
+            href={`/groups/${group.id}`}
         >
             <div className="flex items-center mb-4">
                 {group.avatar ? (
