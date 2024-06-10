@@ -1,9 +1,35 @@
+import {useContext, useEffect, useState} from "react";
+import {UserContext} from "../contexts/UserContext.tsx";
+import {getUsers} from "../services/API.ts";
+import UserInterface from "../interfaces/UserInterface.ts";
+import {UserPreview} from "../components/Users/UserPreview.tsx";
+
 export const Users = () => {
+    const currentUserContext = useContext(UserContext);
+
+    const [users, setUsers] = useState<UserInterface[]>([]);
+
+    useEffect(() => {
+        if (currentUserContext && currentUserContext.accessToken) {
+            currentUserContext.checkTokenStatus();
+            getUsers(currentUserContext.accessToken)
+                .then(data => setUsers(data.users))
+                .catch(error => console.error("Error fetching users", error));
+        }
+    }, [currentUserContext]);
 
     return (
         <>
-            <div className="text-l font-bold text-gray-900">Page Under Construction</div>
-            <div className="text-m text-gray-900">Page for users</div>
+            <h1 className="text-2xl font-bold">Users</h1>
+            {users.length === 0 &&
+                <div>Loading Users</div>}
+            {users &&
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+                    {users.map((user) => (
+                        <UserPreview key={user.username} user={user}/>
+                    ))}
+                </div>
+            }
         </>
     );
 };
