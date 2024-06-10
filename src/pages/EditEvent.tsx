@@ -60,7 +60,7 @@ export const EditEvent = () => {
                 alert('Event updated successfully');
                 navigate(`/events/${event_id}`);
             })
-            .catch(error => console.error("Error creating event", error));
+            .catch(error => console.error("Error updating event", error));
     };
 
     return (
