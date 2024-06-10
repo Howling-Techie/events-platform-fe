@@ -1,5 +1,5 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import UserInterface from "../interfaces/UserInterface.ts";
+import UserInterface, {GroupUserInterface} from "../interfaces/UserInterface.ts";
 import GroupInterface from "../interfaces/GroupInterface.ts";
 import EventInterface from "../interfaces/EventInterface.ts";
 
@@ -101,6 +101,33 @@ export const updateUser = async (user: UserInterface, accessToken: string): Prom
     });
 };
 
+export const updateGroupUser = async (userId: number, groupId: number, status: number, accessToken: string): Promise<{
+    status: { access_level: number, groupId: number, userId: number }
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'patch',
+        url: `/groups/${groupId}/users/${userId}`,
+        data: {status},
+        ...config,
+    });
+};
+
+export const deleteGroupUser = async (userId: number, groupId: number, accessToken: string): Promise<void> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'delete',
+        url: `/groups/${groupId}/users/${userId}`,
+        ...config,
+    });
+};
+
 export const updateUserNote = async (username: string, note: string, accessToken: string): Promise<{
     user: UserInterface
 }> => {
@@ -173,6 +200,20 @@ export const updateGroup = async (group: GroupInterface, accessToken: string): P
         method: 'patch',
         url: `/groups/${group.id}`,
         data: group,
+        ...config,
+    });
+};
+
+export const getGroupUsers = async (id: number, accessToken?: string): Promise<{
+    users: GroupUserInterface[]
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/groups/${id}/users`,
         ...config,
     });
 };
