@@ -1,6 +1,7 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import UserInterface from "../interfaces/UserInterface.ts";
 import GroupInterface from "../interfaces/GroupInterface.ts";
+import EventInterface from "../interfaces/EventInterface.ts";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -176,6 +177,78 @@ export const createGroup = async (group: {
         method: 'post',
         url: `/groups`,
         data: group,
+        ...config,
+    });
+};
+
+export const getEvents = async (accessToken?: string): Promise<{ events: EventInterface[] }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/events`,
+        ...config,
+    });
+};
+
+export const getEvent = async (id: number, accessToken?: string): Promise<{ event: EventInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/events/${id}`,
+        ...config,
+    });
+};
+
+export const joinEvent = async (id: number, accessToken: string): Promise<{
+    event_user: { user_id: number, event_id: number, status: number | undefined }
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/events/${id}/users`,
+        ...config,
+    });
+};
+
+export const leaveEvent = async (id: number, accessToken: string): Promise<{
+    event_user: { user_id: number, event_id: number, status: number | undefined }
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'delete',
+        url: `/events/${id}/users`,
+        ...config,
+    });
+};
+
+export const createEvent = async (event: {
+    title: string,
+    description: string,
+    location: string,
+    start_time: string,
+    visibility: number,
+    group_id: number
+}, accessToken: string): Promise<{ event: EventInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/events`,
+        data: event,
         ...config,
     });
 };
