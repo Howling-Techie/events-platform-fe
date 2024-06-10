@@ -1,5 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import UserInterface from "../interfaces/UserInterface.ts";
+import GroupInterface from "../interfaces/GroupInterface.ts";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -46,6 +47,30 @@ export const getUser = async (username: string, accessToken?: string): Promise<{
     return makeRequest({
         method: 'get',
         url: `/users/${username}`,
+        ...config,
+    });
+};
+
+export const getGroups = async (accessToken?: string): Promise<{ groups: GroupInterface[] }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/groups`,
+        ...config,
+    });
+};
+
+export const getGroup = async (id: number, accessToken?: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/groups/${id}`,
         ...config,
     });
 };
@@ -98,6 +123,47 @@ export const unfollowUser = async (username: string, accessToken: string): Promi
     return makeRequest({
         method: 'delete',
         url: `/users/${username}/follow`,
+        ...config,
+    });
+};
+
+export const joinGroup = async (id: number, accessToken: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/groups/${id}/join`,
+        ...config,
+    });
+};
+
+export const leaveGroup = async (id: number, accessToken: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/groups/${id}/leave`,
+        ...config,
+    });
+};
+
+export const createGroup = async (group: {
+    name: string,
+    about: string,
+    visibility: number
+}, accessToken: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/groups`,
+        data: group,
         ...config,
     });
 };
