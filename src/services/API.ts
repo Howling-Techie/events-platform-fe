@@ -28,6 +28,8 @@ const makeRequest = async (config: AxiosRequestConfig) => {
     }
 };
 
+// USERS
+//  GET
 export const getUsers = async (accessToken?: string): Promise<{ users: UserInterface[] }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
@@ -64,30 +66,7 @@ export const getUserGroups = async (username: string, accessToken?: string): Pro
     });
 };
 
-export const getGroups = async (accessToken?: string): Promise<{ groups: GroupInterface[] }> => {
-    const config: AxiosRequestConfig = accessToken
-        ? setAccessToken(accessToken)
-        : {};
-
-    return makeRequest({
-        method: 'get',
-        url: `/groups`,
-        ...config,
-    });
-};
-
-export const getGroup = async (id: number, accessToken?: string): Promise<{ group: GroupInterface }> => {
-    const config: AxiosRequestConfig = accessToken
-        ? setAccessToken(accessToken)
-        : {};
-
-    return makeRequest({
-        method: 'get',
-        url: `/groups/${id}`,
-        ...config,
-    });
-};
-
+//  UPDATE
 export const updateUser = async (user: UserInterface, accessToken: string): Promise<{ user: UserInterface }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
@@ -97,33 +76,6 @@ export const updateUser = async (user: UserInterface, accessToken: string): Prom
         method: 'patch',
         url: `/users/${user.username}`,
         data: user,
-        ...config,
-    });
-};
-
-export const updateGroupUser = async (userId: number, groupId: number, status: number, accessToken: string): Promise<{
-    status: { access_level: number, groupId: number, userId: number }
-}> => {
-    const config: AxiosRequestConfig = accessToken
-        ? setAccessToken(accessToken)
-        : {};
-
-    return makeRequest({
-        method: 'patch',
-        url: `/groups/${groupId}/users/${userId}`,
-        data: {status},
-        ...config,
-    });
-};
-
-export const deleteGroupUser = async (userId: number, groupId: number, accessToken: string): Promise<void> => {
-    const config: AxiosRequestConfig = accessToken
-        ? setAccessToken(accessToken)
-        : {};
-
-    return makeRequest({
-        method: 'delete',
-        url: `/groups/${groupId}/users/${userId}`,
         ...config,
     });
 };
@@ -167,6 +119,106 @@ export const unfollowUser = async (username: string, accessToken: string): Promi
     });
 };
 
+// GROUPS
+//  GET
+export const getGroups = async (accessToken?: string): Promise<{ groups: GroupInterface[] }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/groups`,
+        ...config,
+    });
+};
+
+export const getGroup = async (id: number, accessToken?: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/groups/${id}`,
+        ...config,
+    });
+};
+
+export const getGroupUsers = async (id: number, accessToken?: string): Promise<{
+    users: GroupUserInterface[]
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/groups/${id}/users`,
+        ...config,
+    });
+};
+
+//  UPDATE
+export const updateGroupUser = async (userId: number, groupId: number, status: number, accessToken: string): Promise<{
+    status: { access_level: number, groupId: number, userId: number }
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'patch',
+        url: `/groups/${groupId}/users/${userId}`,
+        data: {status},
+        ...config,
+    });
+};
+
+export const updateGroup = async (group: GroupInterface, accessToken: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'patch',
+        url: `/groups/${group.id}`,
+        data: group,
+        ...config,
+    });
+};
+
+//  INSERT
+export const createGroup = async (group: {
+    name: string,
+    about: string,
+    visibility: number
+}, accessToken: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/groups`,
+        data: group,
+        ...config,
+    });
+};
+
+//  DELETE
+export const deleteGroupUser = async (userId: number, groupId: number, accessToken: string): Promise<void> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'delete',
+        url: `/groups/${groupId}/users/${userId}`,
+        ...config,
+    });
+};
+
 export const joinGroup = async (id: number, accessToken: string): Promise<{ group: GroupInterface }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
@@ -191,50 +243,8 @@ export const leaveGroup = async (id: number, accessToken: string): Promise<{ gro
     });
 };
 
-export const updateGroup = async (group: GroupInterface, accessToken: string): Promise<{ group: GroupInterface }> => {
-    const config: AxiosRequestConfig = accessToken
-        ? setAccessToken(accessToken)
-        : {};
-
-    return makeRequest({
-        method: 'patch',
-        url: `/groups/${group.id}`,
-        data: group,
-        ...config,
-    });
-};
-
-export const getGroupUsers = async (id: number, accessToken?: string): Promise<{
-    users: GroupUserInterface[]
-}> => {
-    const config: AxiosRequestConfig = accessToken
-        ? setAccessToken(accessToken)
-        : {};
-
-    return makeRequest({
-        method: 'get',
-        url: `/groups/${id}/users`,
-        ...config,
-    });
-};
-
-export const createGroup = async (group: {
-    name: string,
-    about: string,
-    visibility: number
-}, accessToken: string): Promise<{ group: GroupInterface }> => {
-    const config: AxiosRequestConfig = accessToken
-        ? setAccessToken(accessToken)
-        : {};
-
-    return makeRequest({
-        method: 'post',
-        url: `/groups`,
-        data: group,
-        ...config,
-    });
-};
-
+// EVENTS
+//  GET
 export const getEvents = async (accessToken?: string): Promise<{ events: EventInterface[] }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
@@ -259,34 +269,7 @@ export const getEvent = async (id: number, accessToken?: string): Promise<{ even
     });
 };
 
-export const joinEvent = async (id: number, accessToken: string): Promise<{
-    event_user: { user_id: number, event_id: number, status: number | undefined }
-}> => {
-    const config: AxiosRequestConfig = accessToken
-        ? setAccessToken(accessToken)
-        : {};
-
-    return makeRequest({
-        method: 'post',
-        url: `/events/${id}/users`,
-        ...config,
-    });
-};
-
-export const leaveEvent = async (id: number, accessToken: string): Promise<{
-    event_user: { user_id: number, event_id: number, status: number | undefined }
-}> => {
-    const config: AxiosRequestConfig = accessToken
-        ? setAccessToken(accessToken)
-        : {};
-
-    return makeRequest({
-        method: 'delete',
-        url: `/events/${id}/users`,
-        ...config,
-    });
-};
-
+//  INSERT
 export const createEvent = async (event: {
     title: string,
     description: string,
@@ -303,6 +286,35 @@ export const createEvent = async (event: {
         method: 'post',
         url: `/events`,
         data: event,
+        ...config,
+    });
+};
+
+export const joinEvent = async (id: number, accessToken: string): Promise<{
+    event_user: { user_id: number, event_id: number, status: number | undefined }
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/events/${id}/users`,
+        ...config,
+    });
+};
+
+// DELETE
+export const leaveEvent = async (id: number, accessToken: string): Promise<{
+    event_user: { user_id: number, event_id: number, status: number | undefined }
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'delete',
+        url: `/events/${id}/users`,
         ...config,
     });
 };
