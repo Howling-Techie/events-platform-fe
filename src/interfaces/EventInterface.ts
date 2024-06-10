@@ -6,6 +6,7 @@ export default interface EventInterface {
     title: string,
     description: string,
     start_time: string,
+    location: string | undefined,
     visibility: number,
     group: GroupInterface,
     creator: UserInterface,

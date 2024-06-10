@@ -252,3 +252,16 @@ export const createEvent = async (event: {
         ...config,
     });
 };
+
+export const updateEvent = async (event: EventInterface, accessToken: string): Promise<{ event: EventInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'patch',
+        url: `/events/${event.id}`,
+        data: event,
+        ...config,
+    });
+};
