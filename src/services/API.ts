@@ -151,6 +151,19 @@ export const leaveGroup = async (id: number, accessToken: string): Promise<{ gro
     });
 };
 
+export const updateGroup = async (group: GroupInterface, accessToken: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'patch',
+        url: `/groups/${group.id}`,
+        data: group,
+        ...config,
+    });
+};
+
 export const createGroup = async (group: {
     name: string,
     about: string,

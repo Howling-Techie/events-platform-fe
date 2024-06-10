@@ -5,6 +5,7 @@ import {Groups} from "./pages/Groups.tsx";
 import {Group} from "./pages/Group.tsx";
 import {Events} from "./pages/Events.tsx";
 import {Event} from "./pages/Event.tsx";
+import {EditGroup} from "./pages/EditGroup.tsx";
 import {UserSignIn} from "./pages/UserSignIn.tsx";
 import {UserSignOut} from "./pages/UserSignOut.tsx";
 import {NewGroup} from "./pages/NewGroup.tsx";
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/groups" element={<Groups/>}/>
                     <Route path="/groups/new" element={<NewGroup/>}/>
                     <Route path="/groups/:group_id" element={<Group/>}/>
+                    <Route path="/groups/:group_id/group" element={<EditGroup/>}/>
                     <Route path="/events" element={<Events/>}/>
                     <Route path="/events/new" element={<NewEvent/>}/>
                     <Route path="/events/:event_id" element={<Event/>}/>
