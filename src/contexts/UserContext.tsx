@@ -121,8 +121,8 @@ const UserProvider = ({children}: { children: ReactNode }) => {
         if (tokenExpiration && tokenExpiration.auth < Date.now()) {
             if (accessToken && refreshToken)
                 refreshTokens(accessToken, refreshToken).then((data) => {
-                    setAccessToken(data.accessToken);
-                    setRefreshToken(data.refreshToken);
+                    setAccessToken(data.tokens.accessToken);
+                    setRefreshToken(data.tokens.refreshToken);
                     setTokenExpiration(data.expiration);
                 }, () => signOut());
         }
