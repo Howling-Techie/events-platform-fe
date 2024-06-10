@@ -1,14 +1,17 @@
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
-import {getUser, unfollowUser, followUser, updateUserNote} from "../services/API.ts";
+import {getUser, unfollowUser, followUser, updateUserNote, getUserGroups} from "../services/API.ts";
 import UserInterface from "../interfaces/UserInterface.ts";
 import {useParams} from "react-router-dom";
+import {GroupPreview} from "../components/Groups/GroupPreview.tsx";
+import GroupInterface from "../interfaces/GroupInterface.ts";
 
 export const User = () => {
     const currentUserContext = useContext(UserContext);
     const {username} = useParams();
 
     const [user, setUser] = useState<UserInterface>();
+    const [groups, setGroups] = useState<GroupInterface[]>();
     const [editingNote, setEditingNote] = useState(false);
     const [note, setNote] = useState(user?.contact?.note || '');
 
@@ -18,6 +21,9 @@ export const User = () => {
             getUser(username, currentUserContext.accessToken)
                 .then(data => setUser(data.user))
                 .catch(error => console.error("Error fetching user", error));
+            getUserGroups(username, currentUserContext.accessToken)
+                .then(data => setGroups(data.groups))
+                .catch(error => console.error("Error fetching groups", error));
         }
     }, [currentUserContext, username]);
 
@@ -51,9 +57,11 @@ export const User = () => {
 
     return (
         <>
-            <h1 className="text-2xl font-bold">{username}</h1>
             {!user &&
-                <div>Loading User</div>}
+                <div>
+                    <h1 className="text-2xl font-bold">{username}</h1>
+                    Loading User
+                </div>}
             {user &&
                 <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg">
                     <div className="flex items-center mb-4">
@@ -119,6 +127,18 @@ export const User = () => {
                             </div>
                         </div>
                     )}
+                </div>
+            }
+            {!groups &&
+                <div>Loading Groups</div>}
+            {groups &&
+                <div className="mx-auto p-4">
+                    <h2 className="text-xl font-bold">Groups</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+                        {groups.map((group) => (
+                            <GroupPreview key={group.id} group={group}/>
+                        ))}
+                    </div>
                 </div>
             }
         </>
