@@ -126,3 +126,27 @@ export const unfollowUser = async (username: string, accessToken: string): Promi
         ...config,
     });
 };
+
+export const joinGroup = async (id: number, accessToken: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/groups/${id}/join`,
+        ...config,
+    });
+};
+
+export const leaveGroup = async (id: number, accessToken: string): Promise<{ group: GroupInterface }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/groups/${id}/leave`,
+        ...config,
+    });
+};
