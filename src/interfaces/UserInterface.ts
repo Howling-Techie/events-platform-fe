@@ -7,3 +7,8 @@ export default interface UserInterface {
     about: string | undefined,
     contact: { note: string, friends: boolean } | undefined
 }
+
+export interface GroupUserInterface {
+    user: UserInterface;
+    user_access_level: number;
+}
