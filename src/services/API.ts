@@ -1,5 +1,5 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import UserInterface, {GroupUserInterface} from "../interfaces/UserInterface.ts";
+import UserInterface, {EventUserInterface, GroupUserInterface} from "../interfaces/UserInterface.ts";
 import GroupInterface from "../interfaces/GroupInterface.ts";
 import EventInterface from "../interfaces/EventInterface.ts";
 
@@ -310,6 +310,20 @@ export const getEvent = async (id: number, accessToken?: string): Promise<{ even
     });
 };
 
+export const getEventUsers = async (id: number, accessToken?: string): Promise<{
+    users: EventUserInterface[]
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/events/${id}/users`,
+        ...config,
+    });
+};
+
 //  INSERT
 export const createEvent = async (event: {
     title: string,
@@ -332,7 +346,13 @@ export const createEvent = async (event: {
 };
 
 export const joinEvent = async (id: number, accessToken: string): Promise<{
-    event_user: { user_id: number, event_id: number, status: number | undefined }
+    event_user: {
+        user_id: number,
+        event_id: number,
+        status: number,
+        paid: boolean,
+        amount_paid: number
+    }
 }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
@@ -346,7 +366,7 @@ export const joinEvent = async (id: number, accessToken: string): Promise<{
 };
 
 export const insertEventUser = async (userId: number, eventId: number, status: number, accessToken: string): Promise<{
-    status: { access_level: number, groupId: number, userId: number }
+    status: { status: number, groupId: number, userId: number }
 }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
@@ -360,9 +380,39 @@ export const insertEventUser = async (userId: number, eventId: number, status: n
     });
 };
 
+export const updateEventPayment = async (userId: number, eventId: number, amount: number, accessToken: string): Promise<{
+    event_user: { status: number, paid: boolean, amount_paid: number }
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'patch',
+        url: `/events/${eventId}/users/${userId}/payment`,
+        data: {amount},
+        ...config,
+    });
+};
+
 // DELETE
+export const deleteEventUser = async (userId: number, eventId: number, accessToken: string): Promise<void> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'delete',
+        url: `/events/${eventId}/users/${userId}`,
+        ...config,
+    });
+};
 export const leaveEvent = async (id: number, accessToken: string): Promise<{
-    event_user: { user_id: number, event_id: number, status: number | undefined }
+    event_user: {
+        user_id: number,
+        event_id: number,
+        status: { status: number, paid: boolean, amount_paid: number }
+    }
 }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
@@ -375,6 +425,7 @@ export const leaveEvent = async (id: number, accessToken: string): Promise<{
     });
 };
 
+// UPDATE
 export const updateEvent = async (event: EventInterface, accessToken: string): Promise<{ event: EventInterface }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
@@ -384,6 +435,21 @@ export const updateEvent = async (event: EventInterface, accessToken: string): P
         method: 'patch',
         url: `/events/${event.id}`,
         data: event,
+        ...config,
+    });
+};
+
+export const updateEventUser = async (userId: number, eventId: number, status: number, accessToken: string): Promise<{
+    status: { status: number, paid: boolean, amount_paid: number }
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'patch',
+        url: `/events/${eventId}/users/${userId}`,
+        data: {status},
         ...config,
     });
 };

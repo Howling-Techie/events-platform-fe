@@ -2,9 +2,10 @@ import {useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import EventInterface from "../interfaces/EventInterface.ts";
-import {getEvent, joinEvent, leaveEvent} from "../services/API.ts";
+import {getEvent, joinEvent, leaveEvent, updateEventPayment} from "../services/API.ts";
 import {GroupPreview} from "../components/Groups/GroupPreview.tsx";
 import {UserPreview} from "../components/Users/UserPreview.tsx";
+import {EventPayment} from "../components/Events/EventPayment.tsx";
 
 export const Event = () => {
     const currentUserContext = useContext(UserContext);
@@ -36,13 +37,13 @@ export const Event = () => {
 
     const handleJoinRequest = () => {
         if (currentUserContext && currentUserContext.accessToken && event) {
-            if (event.user_status !== undefined) {
+            if (event.status !== undefined) {
                 leaveEvent(event.id, currentUserContext.accessToken)
                     .then(data => {
                         setEvent(prevState => {
                             if (prevState) {
                                 const newState = {...prevState}
-                                newState.user_status = data.event_user.status;
+                                newState.status = data.event_user.status;
                                 return newState;
                             }
                             return prevState;
@@ -55,7 +56,11 @@ export const Event = () => {
                         setEvent(prevState => {
                             if (prevState) {
                                 const newState = {...prevState}
-                                newState.user_status = data.event_user.status;
+                                newState.status = {
+                                    status: data.event_user.status,
+                                    paid: data.event_user.paid,
+                                    amount_paid: data.event_user.amount_paid
+                                };
                                 return newState;
                             }
                             return prevState;
@@ -65,6 +70,20 @@ export const Event = () => {
             }
         }
     };
+
+    const handleSuccessfulPayment = async (amount: number) => {
+        if (currentUserContext && currentUserContext.user && currentUserContext.accessToken && event_id) {
+            const userStatusResult = await updateEventPayment(currentUserContext.user.id, +event_id, amount, currentUserContext.accessToken);
+            setEvent(prevState => {
+                if (prevState) {
+                    const newState = {...prevState};
+                    newState.status = userStatusResult.event_user;
+                    return newState;
+                }
+                return prevState;
+            });
+        }
+    }
 
     return (
         <>
@@ -90,16 +109,17 @@ export const Event = () => {
                             )}
                             <div className="space-x-2">
                                 <h1 className="text-3xl font-bold">{visibility} {event.title}</h1>
-                                <p className="text-gray-500 italic">Part of {event.group.name}</p>
-                                <p className="text-gray-500 italic">Created by {event.creator.display_name}</p>
-                                {event.user_status !== undefined ?
+                                <p className="text-gray-500 italic">When: {new Date(event.start_time).toLocaleDateString()} {new Date(event.start_time).toLocaleTimeString()}</p>
+                                {event.location && <p className="text-gray-500 italic">Where: {event.location}</p>}
+                                {(event.status && event.status.status >= 0 && event.status.status < 4) ?
                                     (
                                         <button
                                             onClick={handleJoinRequest}
                                             className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
                                         >
-                                            {event.user_status === 0 ? "Cancel Request" : "Leave Event"}
-                                        </button>) : (currentUserContext && currentUserContext.user && currentUserContext.user.id === event.creator.id) ?
+                                            {(event.status && event.status.status === 0) ? "Cancel Request" : "Leave Event"}
+                                        </button>)
+                                    : (event.status && event.status.status === 4) ?
                                         <button disabled={true}
                                                 className="mt-2 px-4 py-2 bg-gray-300 text-gray-900 rounded-md"
                                         >Cannot Leave Event You Created</button> : (
@@ -110,7 +130,7 @@ export const Event = () => {
                                                 Request To Attend
                                             </button>
                                         )}
-                                {(event.user_status && event.user_status > 1) || event.creator.id == currentUserContext?.user?.id &&
+                                {(event.status && event.status && event.status.status >= 3) &&
                                     <a
                                         href={`/events/${event_id}/invite`}
                                         className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
@@ -127,6 +147,20 @@ export const Event = () => {
                         {event.google_link &&
                             <div className="mt-2"><AddToCalendarButton googleEventUrl={event.google_link}/></div>}
                     </div>
+                    {((event.price > 0 || event.pay_what_you_want) && event.status && !event.status.paid && currentUserContext && currentUserContext.user && event.status.status >= 1) &&
+                        <div className="max-w-2xl mx-auto p-4 mt-4 bg-white shadow-md rounded-lg">
+                            <EventPayment eventId={event.id} price={event.price} userId={currentUserContext.user.id}
+                                          payWhatYouWant={event.pay_what_you_want}
+                                          confirmPayment={handleSuccessfulPayment}/>
+                        </div>
+                    }
+                    {(event.status && event.status.paid) &&
+                        <div className="max-w-2xl mx-auto p-4 mt-4 bg-white shadow-md rounded-lg divide-y space-y-2">
+                            <p className="text-2xl font-bold">You're good to go!</p>
+                            <p className="">We've received your payment of <span
+                                className="font-semibold">£{event.status.amount_paid}</span>!</p>
+                        </div>
+                    }
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto py-4">
                         <div>
                             <h2 className="text-xl font-bold pb-2">Group Info</h2>

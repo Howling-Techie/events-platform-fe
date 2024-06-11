@@ -1,9 +1,9 @@
-import UserInterface, {GroupUserInterface} from "../../interfaces/UserInterface.ts";
+import UserInterface, {EventUserInterface} from "../../interfaces/UserInterface.ts";
 import {FaUser, FaCheck, FaTimes, FaArrowUp, FaArrowDown, FaUserTimes, FaUserShield} from 'react-icons/fa';
 import {useState} from "react";
 
-interface GroupUserManagerProps {
-    groupUsers: GroupUserInterface[];
+interface EventUserManagerProps {
+    eventUsers: EventUserInterface[];
     onApproveRequest: (userId: number) => void;
     onDenyRequest: (userId: number) => void;
     onKickUser: (userId: number) => void;
@@ -11,14 +11,14 @@ interface GroupUserManagerProps {
     onDemoteToUser: (userId: number) => void;
 }
 
-export const GroupUserManager = ({
-                                     groupUsers,
+export const EventUserManager = ({
+                                     eventUsers,
                                      onApproveRequest,
                                      onDenyRequest,
                                      onKickUser,
                                      onPromoteToModerator,
                                      onDemoteToUser,
-                                 }: GroupUserManagerProps) => {
+                                 }: EventUserManagerProps) => {
     const [search, setSearch] = useState('');
     const [sortKey, setSortKey] = useState<keyof UserInterface | 'user_access'>('username');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -35,26 +35,26 @@ export const GroupUserManager = ({
     const getStatusIcon = (accessLevel: number) => {
         switch (accessLevel) {
             case 0:
-                return <FaUser className="text-gray-500"/>;
+                return (<><FaUser className="text-gray-500 inline"/> Requested Access</>);
             case 1:
-                return <FaUser className="text-green-500"/>;
+                return (<><FaUser className="text-green-500 inline"/> Approved</>);
             case 2:
-                return <FaUserShield className="text-blue-500"/>;
+                return (<><FaUserShield className="text-blue-500 inline"/> Moderator</>);
             case 3:
-                return <FaUserShield className="text-yellow-500"/>;
+                return (<><FaUserShield className="text-yellow-500 inline"/> Event Creator</>);
             default:
                 return null;
         }
     };
 
-    const filteredUsers = groupUsers.filter((groupUser) =>
-        groupUser.user.username.toLowerCase().includes(search.toLowerCase()) ||
-        groupUser.user.display_name.toLowerCase().includes(search.toLowerCase())
+    const filteredUsers = eventUsers.filter((eventUser) =>
+        eventUser.user.username.toLowerCase().includes(search.toLowerCase()) ||
+        eventUser.user.display_name.toLowerCase().includes(search.toLowerCase())
     );
 
     const sortedUsers = [...filteredUsers].sort((a, b) => {
-        const aValue = a.user[sortKey as keyof UserInterface] || a[sortKey as 'user_access'];
-        const bValue = b.user[sortKey as keyof UserInterface] || b[sortKey as 'user_access'];
+        const aValue = a.user[sortKey as keyof UserInterface] || a[sortKey as 'status'];
+        const bValue = b.user[sortKey as keyof UserInterface] || b[sortKey as 'status'];
 
         if (aValue < bValue) {
             return sortOrder === 'asc' ? -1 : 1;
@@ -67,7 +67,7 @@ export const GroupUserManager = ({
 
     return (
         <div className="max-w-4xl mx-auto p-4 bg-white shadow-md rounded-lg">
-            <h1 className="text-3xl font-bold mb-6 text-center">Manage Group Users</h1>
+            <h1 className="text-3xl font-bold mb-6 text-center">Manage Event Users</h1>
             <input
                 type="text"
                 placeholder="Search users"
@@ -88,68 +88,68 @@ export const GroupUserManager = ({
                 </tr>
                 </thead>
                 <tbody>
-                {sortedUsers.map((groupUser) => (
-                    <tr key={groupUser.user.id} className="text-center">
+                {sortedUsers.map((eventUser) => (
+                    <tr key={eventUser.user.id} className="text-center">
                         <td className="border p-2">
-                            {groupUser.user.avatar ? (
-                                <img src={groupUser.user.avatar} alt="Avatar" className="w-8 h-8 rounded-full mx-auto"/>
+                            {eventUser.user.avatar ? (
+                                <img src={eventUser.user.avatar} alt="Avatar" className="w-8 h-8 rounded-full mx-auto"/>
                             ) : (
                                 <FaUser className="text-gray-500 w-8 h-8 mx-auto"/>
                             )}
                         </td>
-                        <td className="border p-2">{groupUser.user.username}</td>
-                        <td className="border p-2">{groupUser.user.display_name}</td>
-                        <td className="border p-2">{getStatusIcon(groupUser.user_access)}</td>
+                        <td className="border p-2">{eventUser.user.username}</td>
+                        <td className="border p-2">{eventUser.user.display_name}</td>
+                        <td className="border p-2">{getStatusIcon(eventUser.status.status)}</td>
                         <td className="border p-2">
-                            {groupUser.user_access === 0 && (
+                            {eventUser.status.status === 0 && (
                                 <>
                                     <button
                                         className="bg-green-500 text-white p-1 rounded-md mx-1"
-                                        onClick={() => onApproveRequest(groupUser.user.id)}
+                                        onClick={() => onApproveRequest(eventUser.user.id)}
                                     >
                                         <FaCheck/>
                                     </button>
                                     <button
                                         className="bg-red-500 text-white p-1 rounded-md mx-1"
-                                        onClick={() => onDenyRequest(groupUser.user.id)}
+                                        onClick={() => onDenyRequest(eventUser.user.id)}
                                     >
                                         <FaTimes/>
                                     </button>
                                 </>
                             )}
-                            {groupUser.user_access === 1 && (
+                            {eventUser.status.status === 1 && (
                                 <>
                                     <button
                                         className="bg-red-500 text-white p-1 rounded-md mx-1"
-                                        onClick={() => onKickUser(groupUser.user.id)}
+                                        onClick={() => onKickUser(eventUser.user.id)}
                                     >
                                         <FaUserTimes/>
                                     </button>
                                     <button
                                         className="bg-blue-500 text-white p-1 rounded-md mx-1"
-                                        onClick={() => onPromoteToModerator(groupUser.user.id)}
+                                        onClick={() => onPromoteToModerator(eventUser.user.id)}
                                     >
                                         <FaArrowUp/>
                                     </button>
                                 </>
                             )}
-                            {groupUser.user_access === 2 && (
+                            {eventUser.status.status === 2 && (
                                 <>
                                     <button
                                         className="bg-red-500 text-white p-1 rounded-md mx-1"
-                                        onClick={() => onKickUser(groupUser.user.id)}
+                                        onClick={() => onKickUser(eventUser.user.id)}
                                     >
                                         <FaUserTimes/>
                                     </button>
                                     <button
                                         className="bg-yellow-500 text-white p-1 rounded-md mx-1"
-                                        onClick={() => onDemoteToUser(groupUser.user.id)}
+                                        onClick={() => onDemoteToUser(eventUser.user.id)}
                                     >
                                         <FaArrowDown/>
                                     </button>
                                 </>
                             )}
-                            {groupUser.user_access === 3 && (
+                            {eventUser.status.status === 3 && (
                                 <span className="text-gray-500">Owner</span>
                             )}
                         </td>

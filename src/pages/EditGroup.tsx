@@ -70,7 +70,7 @@ export const EditGroup = () => {
                     const userIndex = newState.findIndex(u => u.user.id == userId);
                     newState[userIndex] = {
                         ...newState[userIndex],
-                        user_access_level: data.status.access_level
+                        user_access: data.status.access_level
                     };
                     return newState;
                 }
@@ -123,7 +123,7 @@ export const EditGroup = () => {
                     const userIndex = newState.findIndex(u => u.user.id == userId);
                     newState[userIndex] = {
                         ...newState[userIndex],
-                        user_access_level: data.status.access_level
+                        user_access: data.status.access_level
                     };
                     console.log(newState)
                     return newState;
@@ -143,7 +143,7 @@ export const EditGroup = () => {
                     const userIndex = newState.findIndex(u => u.user.id == userId);
                     newState[userIndex] = {
                         ...newState[userIndex],
-                        user_access_level: data.status.access_level
+                        user_access: data.status.access_level
                     };
                     return newState;
                 }

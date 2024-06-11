@@ -10,6 +10,8 @@ export default interface EventInterface {
     visibility: number,
     group: GroupInterface,
     creator: UserInterface,
-    user_status: number | undefined,
-    google_link: string | undefined
+    status: { status: number, paid: boolean, amount_paid: number } | undefined,
+    google_link: string | undefined,
+    price: number,
+    pay_what_you_want: boolean
 }
