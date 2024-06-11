@@ -69,7 +69,7 @@ export const Group = () => {
                                     <span className="text-gray-500 text-xl">{group.name.charAt(0)}</span>
                                 </div>
                             )}
-                            <div>
+                            <div className="space-x-2">
                                 <h1 className="text-3xl font-bold">{visibility} {group.name}</h1>
                                 <p className="text-gray-500 italic">Owned by {group.owner.display_name}</p>
                                 {group.user_access_level !== undefined ?
@@ -90,6 +90,14 @@ export const Group = () => {
                                                 Request To Join
                                             </button>
                                         )}
+                                {group.user_access_level && group.user_access_level > 1 &&
+                                    <a
+                                        href={`/groups/${group_id}/invite`}
+                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                    >
+                                        Add users to group
+                                    </a>
+                                }
                             </div>
                         </div>
                         <div>

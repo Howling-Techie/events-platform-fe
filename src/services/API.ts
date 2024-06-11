@@ -42,6 +42,18 @@ export const getUsers = async (accessToken?: string): Promise<{ users: UserInter
     });
 };
 
+export const searchUsers = async (searchTerm: string, accessToken?: string): Promise<{ users: UserInterface[] }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/users?search=${searchTerm}`,
+        ...config,
+    });
+}
+
 export const getUser = async (username: string, accessToken?: string): Promise<{ user: UserInterface }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
@@ -206,6 +218,21 @@ export const createGroup = async (group: {
     });
 };
 
+export const insertGroupUser = async (userId: number, groupId: number, status: number, accessToken: string): Promise<{
+    status: { access_level: number, groupId: number, userId: number }
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/groups/${groupId}/users/${userId}`,
+        data: {status},
+        ...config,
+    });
+};
+
 //  DELETE
 export const deleteGroupUser = async (userId: number, groupId: number, accessToken: string): Promise<void> => {
     const config: AxiosRequestConfig = accessToken
@@ -300,6 +327,21 @@ export const joinEvent = async (id: number, accessToken: string): Promise<{
     return makeRequest({
         method: 'post',
         url: `/events/${id}/users`,
+        ...config,
+    });
+};
+
+export const insertEventUser = async (userId: number, eventId: number, status: number, accessToken: string): Promise<{
+    status: { access_level: number, groupId: number, userId: number }
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'post',
+        url: `/groups/${eventId}/users/${userId}`,
+        data: {status},
         ...config,
     });
 };
