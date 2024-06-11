@@ -88,7 +88,7 @@ export const Event = () => {
                                     <span className="text-gray-500 text-xl">{event.group.name.charAt(0)}</span>
                                 </div>
                             )}
-                            <div>
+                            <div className="space-x-2">
                                 <h1 className="text-3xl font-bold">{visibility} {event.title}</h1>
                                 <p className="text-gray-500 italic">Part of {event.group.name}</p>
                                 <p className="text-gray-500 italic">Created by {event.creator.display_name}</p>
@@ -110,6 +110,14 @@ export const Event = () => {
                                                 Request To Attend
                                             </button>
                                         )}
+                                {(event.user_status && event.user_status > 1) || event.creator.id == currentUserContext?.user?.id &&
+                                    <a
+                                        href={`/events/${event_id}/invite`}
+                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                    >
+                                        Add users to group
+                                    </a>
+                                }
                             </div>
                         </div>
                         <div>

@@ -11,7 +11,7 @@ export const Groups = () => {
 
     useEffect(() => {
         if (currentUserContext && currentUserContext.accessToken) {
-            currentUserContext.checkTokenStatus();
+            currentUserContext.checkTokenStatus()
             getGroups(currentUserContext.accessToken)
                 .then(data => setGroups(data.groups))
                 .catch(error => console.error("Error fetching groups", error));
