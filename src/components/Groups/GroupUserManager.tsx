@@ -20,10 +20,10 @@ export const GroupUserManager = ({
                                      onDemoteToUser,
                                  }: GroupUserManagerProps) => {
     const [search, setSearch] = useState('');
-    const [sortKey, setSortKey] = useState<keyof UserInterface | 'user_access_level'>('username');
+    const [sortKey, setSortKey] = useState<keyof UserInterface | 'user_access'>('username');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-    const handleSort = (key: keyof UserInterface | 'user_access_level') => {
+    const handleSort = (key: keyof UserInterface | 'user_access') => {
         if (sortKey === key) {
             setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
         } else {
@@ -53,8 +53,8 @@ export const GroupUserManager = ({
     );
 
     const sortedUsers = [...filteredUsers].sort((a, b) => {
-        const aValue = a.user[sortKey as keyof UserInterface] || a[sortKey as 'user_access_level'];
-        const bValue = b.user[sortKey as keyof UserInterface] || b[sortKey as 'user_access_level'];
+        const aValue = a.user[sortKey as keyof UserInterface] || a[sortKey as 'user_access'];
+        const bValue = b.user[sortKey as keyof UserInterface] || b[sortKey as 'user_access'];
 
         if (aValue < bValue) {
             return sortOrder === 'asc' ? -1 : 1;
@@ -82,7 +82,7 @@ export const GroupUserManager = ({
                     <th className="border p-2 cursor-pointer" onClick={() => handleSort('username')}>Username</th>
                     <th className="border p-2 cursor-pointer" onClick={() => handleSort('display_name')}>Display Name
                     </th>
-                    <th className="border p-2 cursor-pointer" onClick={() => handleSort('user_access_level')}>Status
+                    <th className="border p-2 cursor-pointer" onClick={() => handleSort('user_access')}>Status
                     </th>
                     <th className="border p-2">Actions</th>
                 </tr>
@@ -99,9 +99,9 @@ export const GroupUserManager = ({
                         </td>
                         <td className="border p-2">{groupUser.user.username}</td>
                         <td className="border p-2">{groupUser.user.display_name}</td>
-                        <td className="border p-2">{getStatusIcon(groupUser.user_access_level)}</td>
+                        <td className="border p-2">{getStatusIcon(groupUser.user_access)}</td>
                         <td className="border p-2">
-                            {groupUser.user_access_level === 0 && (
+                            {groupUser.user_access === 0 && (
                                 <>
                                     <button
                                         className="bg-green-500 text-white p-1 rounded-md mx-1"
@@ -117,7 +117,7 @@ export const GroupUserManager = ({
                                     </button>
                                 </>
                             )}
-                            {groupUser.user_access_level === 1 && (
+                            {groupUser.user_access === 1 && (
                                 <>
                                     <button
                                         className="bg-red-500 text-white p-1 rounded-md mx-1"
@@ -133,7 +133,7 @@ export const GroupUserManager = ({
                                     </button>
                                 </>
                             )}
-                            {groupUser.user_access_level === 2 && (
+                            {groupUser.user_access === 2 && (
                                 <>
                                     <button
                                         className="bg-red-500 text-white p-1 rounded-md mx-1"
@@ -149,7 +149,7 @@ export const GroupUserManager = ({
                                     </button>
                                 </>
                             )}
-                            {groupUser.user_access_level === 3 && (
+                            {groupUser.user_access === 3 && (
                                 <span className="text-gray-500">Owner</span>
                             )}
                         </td>
