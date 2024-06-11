@@ -10,5 +10,10 @@ export default interface UserInterface {
 
 export interface GroupUserInterface {
     user: UserInterface;
-    user_access_level: number;
+    user_access: number;
+}
+
+export interface EventUserInterface {
+    user: UserInterface;
+    status: { status: number, paid: boolean, amount_paid: number }
 }
