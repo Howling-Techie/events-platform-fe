@@ -15,6 +15,7 @@ import {User} from "./pages/User.tsx";
 import {Users} from "./pages/Users.tsx";
 import {EditEvent} from "./pages/EditEvent.tsx";
 import {GroupInvites} from "./pages/GroupInvites.tsx";
+import {EventInvites} from "./pages/EventInvites.tsx";
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
                     <Route path="/events/new" element={<NewEvent/>}/>
                     <Route path="/events/:event_id" element={<Event/>}/>
                     <Route path="/events/:event_id/edit" element={<EditEvent/>}/>
+                    <Route path="/events/:event_id/invite" element={<EventInvites/>}/>
                     <Route path="/users" element={<Users/>}/>
                     <Route path="/users/:username" element={<User/>}/>
                     <Route path="/profile" element={<Profile/>}/>

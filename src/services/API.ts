@@ -171,6 +171,20 @@ export const getGroupUsers = async (id: number, accessToken?: string): Promise<{
     });
 };
 
+export const searchGroupUsers = async (id: number, search: string, accessToken?: string): Promise<{
+    users: GroupUserInterface[]
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/groups/${id}/users?search=${search}`,
+        ...config,
+    });
+};
+
 //  UPDATE
 export const updateGroupUser = async (userId: number, groupId: number, status: number, accessToken: string): Promise<{
     status: { access_level: number, groupId: number, userId: number }
@@ -340,7 +354,7 @@ export const insertEventUser = async (userId: number, eventId: number, status: n
 
     return makeRequest({
         method: 'post',
-        url: `/groups/${eventId}/users/${userId}`,
+        url: `/events/${eventId}/users/${userId}`,
         data: {status},
         ...config,
     });
