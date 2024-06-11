@@ -1,8 +1,10 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
-import {getEvent, updateEvent} from "../services/API.ts";
+import {deleteEventUser, getEvent, getEventUsers, updateEvent, updateEventUser} from "../services/API.ts";
 import EventInterface from "../interfaces/EventInterface.ts";
+import {EventUserInterface} from "../interfaces/UserInterface.ts";
+import {EventUserManager} from "../components/Events/EventUserManager.tsx";
 
 export const EditEvent = () => {
     const currentUserContext = useContext(UserContext);
@@ -10,6 +12,7 @@ export const EditEvent = () => {
     const {event_id} = useParams();
 
     const [event, setEvent] = useState<EventInterface>();
+    const [eventUsers, setEventUsers] = useState<EventUserInterface[]>();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [location, setLocation] = useState('');
@@ -31,6 +34,12 @@ export const EditEvent = () => {
                     setPastStartTime(new Date(data.event.start_time) < new Date());
                 })
                 .catch(error => console.error("Error fetching event", error));
+            getEventUsers(+event_id, currentUserContext.accessToken)
+                .then((data) => {
+                    console.log(data)
+                    setEventUsers(data.users);
+                })
+                .catch(error => console.error("Error fetching group", error));
         }
     }, [currentUserContext, event_id]);
 
@@ -63,83 +72,186 @@ export const EditEvent = () => {
             .catch(error => console.error("Error updating event", error));
     };
 
+    const handleApproveRequest = (userId: number) => {
+        if (!currentUserContext || !currentUserContext.accessToken || !event)
+            return;
+        updateEventUser(userId, event.id, 1, currentUserContext.accessToken).then(data => {
+            setEventUsers(prevState => {
+                if (prevState) {
+                    const newState = [...prevState];
+                    const userIndex = newState.findIndex(u => u.user.id == userId);
+                    newState[userIndex] = {
+                        ...newState[userIndex],
+                        status: data.status
+                    };
+                    return newState;
+                }
+            })
+        })
+            .catch(error => console.error("Error updating user", error));
+    };
+
+    const handleDenyRequest = (userId: number) => {
+        if (!currentUserContext || !currentUserContext.accessToken || !event)
+            return;
+        deleteEventUser(userId, event.id, currentUserContext.accessToken).then(() => {
+            setEventUsers(prevState => {
+                if (prevState) {
+                    const newState = [...prevState];
+                    const userIndex = newState.findIndex(u => u.user.id == userId);
+                    newState.splice(userIndex, 1);
+                    return newState;
+                }
+            })
+        })
+            .catch(error => console.error("Error updating user", error));
+    };
+
+    const handleKickUser = (userId: number) => {
+        if (!currentUserContext || !currentUserContext.accessToken || !event)
+            return;
+        deleteEventUser(userId, event.id, currentUserContext.accessToken).then(() => {
+            setEventUsers(prevState => {
+                if (prevState) {
+                    const newState = [...prevState];
+                    const userIndex = newState.findIndex(u => u.user.id == userId);
+                    newState.splice(userIndex, 1);
+                    return newState;
+                }
+            })
+        })
+            .catch(error => console.error("Error updating user", error));
+    };
+
+    const handlePromoteToModerator = (userId: number) => {
+        if (!currentUserContext || !currentUserContext.accessToken || !event)
+            return;
+        updateEventUser(userId, event.id, 2, currentUserContext.accessToken).then(data => {
+            setEventUsers(prevState => {
+                if (prevState) {
+                    const newState = [...prevState];
+                    const userIndex = newState.findIndex(u => u.user.id == userId);
+                    newState[userIndex] = {
+                        ...newState[userIndex],
+                        status: data.status
+                    };
+                    console.log(newState)
+                    return newState;
+                }
+            })
+        })
+            .catch(error => console.error("Error updating user", error));
+    };
+
+    const handleDemoteToUser = (userId: number) => {
+        if (!currentUserContext || !currentUserContext.accessToken || !event)
+            return;
+        updateEventUser(userId, event.id, 1, currentUserContext.accessToken).then(data => {
+            setEventUsers(prevState => {
+                if (prevState) {
+                    const newState = [...prevState];
+                    const userIndex = newState.findIndex(u => u.user.id == userId);
+                    newState[userIndex] = {
+                        ...newState[userIndex],
+                        status: data.status
+                    };
+                    return newState;
+                }
+            })
+        })
+            .catch(error => console.error("Error updating user", error));
+    };
+
     return (
-        <div className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
-            <h1 className="text-3xl font-bold mb-6 text-center">Edit Event</h1>
-            {event && <>
-                <div className="mb-4">
-                    <label className="block text-gray-700 font-bold mb-2" htmlFor="title">
-                        Title
-                    </label>
-                    <input
-                        id="title"
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        placeholder="Enter event title"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 font-bold mb-2" htmlFor="description">
-                        Description
-                    </label>
-                    <textarea
-                        id="description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        placeholder="Describe your event"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 font-bold mb-2" htmlFor="location">
-                        Location
-                    </label>
-                    <input
-                        id="location"
-                        type="text"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        placeholder="Enter event location"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 font-bold mb-2" htmlFor="startTime">
-                        Event Start Time
-                    </label>
-                    <input
-                        id="startTime"
-                        type="datetime-local"
-                        value={startTime}
-                        onChange={(e) => setStartTime(e.target.value)}
-                        className="w-full p-2 border rounded-md"
-                        disabled={pastStartTime}
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 font-bold mb-2" htmlFor="visibility">
-                        Visibility
-                    </label>
-                    <select
-                        id="visibility"
-                        value={visibility}
-                        onChange={(e) => setVisibility(+e.target.value)}
-                        className="w-full p-2 border rounded-md"
+        <>
+            <div className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
+                <h1 className="text-3xl font-bold mb-6 text-center">Edit Event</h1>
+                {event && <>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 font-bold mb-2" htmlFor="title">
+                            Title
+                        </label>
+                        <input
+                            id="title"
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="w-full p-2 border rounded-md"
+                            placeholder="Enter event title"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 font-bold mb-2" htmlFor="description">
+                            Description
+                        </label>
+                        <textarea
+                            id="description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="w-full p-2 border rounded-md"
+                            placeholder="Describe your event"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 font-bold mb-2" htmlFor="location">
+                            Location
+                        </label>
+                        <input
+                            id="location"
+                            type="text"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            className="w-full p-2 border rounded-md"
+                            placeholder="Enter event location"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 font-bold mb-2" htmlFor="startTime">
+                            Event Start Time
+                        </label>
+                        <input
+                            id="startTime"
+                            type="datetime-local"
+                            value={startTime}
+                            onChange={(e) => setStartTime(e.target.value)}
+                            className="w-full p-2 border rounded-md"
+                            disabled={pastStartTime}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 font-bold mb-2" htmlFor="visibility">
+                            Visibility
+                        </label>
+                        <select
+                            id="visibility"
+                            value={visibility}
+                            onChange={(e) => setVisibility(+e.target.value)}
+                            className="w-full p-2 border rounded-md"
+                        >
+                            <option value={0}>Public</option>
+                            <option value={1}>Users Require Approval</option>
+                            <option value={2}>Invite Only</option>
+                        </select>
+                    </div>
+                    <button
+                        onClick={handleUpdateEvent}
+                        className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
                     >
-                        <option value={0}>Public</option>
-                        <option value={1}>Users Require Approval</option>
-                        <option value={2}>Invite Only</option>
-                    </select>
-                </div>
-                <button
-                    onClick={handleUpdateEvent}
-                    className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
-                >
-                    Update
-                </button>
-            </>}
-        </div>
+                        Update
+                    </button>
+                </>}
+            </div>
+            {eventUsers &&
+                <div className="mt-2">
+                    <EventUserManager
+                        eventUsers={eventUsers}
+                        onApproveRequest={handleApproveRequest}
+                        onDenyRequest={handleDenyRequest}
+                        onKickUser={handleKickUser}
+                        onPromoteToModerator={handlePromoteToModerator}
+                        onDemoteToUser={handleDemoteToUser}
+                    />
+                </div>}
+        </>
     );
 };
