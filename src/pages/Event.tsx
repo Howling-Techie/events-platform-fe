@@ -123,6 +123,9 @@ export const Event = () => {
                         <div>
                             <p>{event.description}</p>
                         </div>
+
+                        {event.google_link &&
+                            <div className="mt-2"><AddToCalendarButton googleEventUrl={event.google_link}/></div>}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto py-4">
                         <div>
@@ -137,5 +140,16 @@ export const Event = () => {
                 </>
             }
         </>
+    );
+};
+
+const AddToCalendarButton = ({googleEventUrl}: { googleEventUrl: string }) => {
+    return (
+        <a
+            href={googleEventUrl}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        >
+            Add to Google Calendar
+        </a>
     );
 };

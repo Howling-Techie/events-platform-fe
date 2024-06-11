@@ -10,5 +10,6 @@ export default interface EventInterface {
     visibility: number,
     group: GroupInterface,
     creator: UserInterface,
-    user_status: number | undefined
+    user_status: number | undefined,
+    google_link: string | undefined
 }
