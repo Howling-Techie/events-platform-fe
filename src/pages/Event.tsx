@@ -98,7 +98,7 @@ export const Event = () => {
             )}
             {event && (
                 <>
-                    <section className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg">
+                    <section className="w-full max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg">
                         <header className="flex items-center mb-4">
                             {event.group.avatar ? (
                                 <img
@@ -112,7 +112,7 @@ export const Event = () => {
                                     <span className="text-gray-500 text-xl">{event.group.name.charAt(0)}</span>
                                 </div>
                             )}
-                            <div className="flex flex-col">
+                            <div className="flex flex-col flex-grow">
                                 <h1 className="text-3xl font-bold">
                                     {visibility} {event.title}
                                 </h1>
@@ -151,7 +151,7 @@ export const Event = () => {
                                         Request To Attend
                                     </button>
                                 )}
-                                {event.status && event.status.status >= 3 && (
+                                {event.status && event.status.status > 1 && (
                                     <div className="flex-wrap md:space-x-2 grid grid-cols-1 md:grid-cols-2"><Link
                                         to={`/events/${event_id}/invite`}
                                         className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex justify-center"
@@ -205,7 +205,7 @@ export const Event = () => {
                             </p>
                         </section>
                     )}
-                    <section className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto py-4">
+                    <section className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto py-4 w-full">
                         <article>
                             <h2 className="text-xl font-bold pb-2">Group Info</h2>
                             <GroupPreview group={event.group}/>
