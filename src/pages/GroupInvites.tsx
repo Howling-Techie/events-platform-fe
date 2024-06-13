@@ -8,7 +8,7 @@ export const GroupInvites = () => {
     const currentUserContext = useContext(UserContext);
     const {group_id} = useParams();
 
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState<UserInterface[]>([]);
     const [selectedUsers, setSelectedUsers] = useState<Set<number>>(new Set());
 
@@ -26,7 +26,6 @@ export const GroupInvites = () => {
     };
 
     const toggleUserSelection = (userId: number) => {
-        console.log(`Adding user ${userId}`)
         const newSelectedUsers = new Set(selectedUsers);
         if (newSelectedUsers.has(userId)) {
             newSelectedUsers.delete(userId);
@@ -43,25 +42,31 @@ export const GroupInvites = () => {
             }
             setSelectedUsers(new Set());
             setSearchResults([]);
-            setSearchTerm('');
-            alert('Selected users have been added to the group');
+            setSearchTerm("");
+            alert("Selected users have been added to the group");
         }
     };
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Invite Users to Group</h1>
+        <section className="p-4">
+            <header>
+                <h1 className="text-2xl font-bold mb-4">Invite Users to Group</h1>
+            </header>
             <div className="mb-4">
+                <label htmlFor="user-search" className="sr-only">Search for users</label>
                 <input
+                    id="user-search"
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search for users..."
                     className="border border-gray-300 rounded p-2 mr-2"
+                    aria-label="Search for users"
                 />
                 <button
                     onClick={handleSearch}
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    aria-label="Search"
                 >
                     Search
                 </button>
@@ -71,12 +76,15 @@ export const GroupInvites = () => {
                     <div key={user.id} className="flex items-center mb-2">
                         <input
                             type="checkbox"
+                            id={`user-${user.id}`}
                             checked={selectedUsers.has(user.id)}
                             onChange={() => toggleUserSelection(user.id)}
                             className="mr-2"
+                            aria-labelledby={`user-label-${user.id}`}
                         />
-                        {user.avatar &&
-                            <img src={user.avatar} alt={user.username} className="w-8 h-8 rounded-full mr-2"/>}
+                        {user.avatar && (
+                            <img src={user.avatar} alt={user.username} className="w-8 h-8 rounded-full mr-2"/>
+                        )}
                         <div>
                             <div className="font-bold">{user.display_name}</div>
                             <div className="text-gray-500 italic">@{user.username}</div>
@@ -88,10 +96,11 @@ export const GroupInvites = () => {
                 <button
                     onClick={handleAddUsersToGroup}
                     className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+                    aria-label="Add Selected Users to Group"
                 >
                     Add Selected Users to Group
                 </button>
             )}
-        </div>
+        </section>
     );
 };

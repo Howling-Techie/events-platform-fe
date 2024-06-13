@@ -42,12 +42,12 @@ export const Event = () => {
                     .then(data => {
                         setEvent(prevState => {
                             if (prevState) {
-                                const newState = {...prevState}
+                                const newState = {...prevState};
                                 newState.status = data.event_user.status;
                                 return newState;
                             }
                             return prevState;
-                        })
+                        });
                     })
                     .catch(error => console.error("Error updating event", error));
             } else {
@@ -55,7 +55,7 @@ export const Event = () => {
                     .then(data => {
                         setEvent(prevState => {
                             if (prevState) {
-                                const newState = {...prevState}
+                                const newState = {...prevState};
                                 newState.status = {
                                     status: data.event_user.status,
                                     paid: data.event_user.paid,
@@ -64,7 +64,7 @@ export const Event = () => {
                                 return newState;
                             }
                             return prevState;
-                        })
+                        });
                     })
                     .catch(error => console.error("Error updating event", error));
             }
@@ -83,24 +83,26 @@ export const Event = () => {
                 return prevState;
             });
         }
-    }
+    };
 
     return (
         <>
-
-            {!event &&
+            {!event && (
                 <>
                     <h1 className="text-2xl font-bold">{event_id}</h1>
                     <div>Loading Event</div>
                 </>
-            }
-            {event &&
+            )}
+            {event && (
                 <>
-                    <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg">
-                        <div className="flex items-center mb-4">
+                    <section className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg">
+                        <header className="flex items-center mb-4">
                             {event.group.avatar ? (
-                                <img src={event.group.avatar} alt={event.group.name}
-                                     className="w-24 h-24 rounded-full mr-4"/>
+                                <img
+                                    src={event.group.avatar}
+                                    alt={event.group.name}
+                                    className="w-24 h-24 rounded-full mr-4"
+                                />
                             ) : (
                                 <div
                                     className="w-24 h-24 rounded-full bg-gray-200 mr-4 flex items-center justify-center">
@@ -108,71 +110,102 @@ export const Event = () => {
                                 </div>
                             )}
                             <div className="space-x-2">
-                                <h1 className="text-3xl font-bold">{visibility} {event.title}</h1>
-                                <p className="text-gray-500 italic">When: {new Date(event.start_time).toLocaleDateString()} {new Date(event.start_time).toLocaleTimeString()}</p>
-                                {event.location && <p className="text-gray-500 italic">Where: {event.location}</p>}
-                                {(event.status && event.status.status >= 0 && event.status.status < 4) ?
-                                    (
-                                        <button
-                                            onClick={handleJoinRequest}
-                                            className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                                        >
-                                            {(event.status && event.status.status === 0) ? "Cancel Request" : "Leave Event"}
-                                        </button>)
-                                    : (event.status && event.status.status === 4) ?
-                                        <button disabled={true}
-                                                className="mt-2 px-4 py-2 bg-gray-300 text-gray-900 rounded-md"
-                                        >Cannot Leave Event You Created</button> : (
-                                            <button
-                                                onClick={handleJoinRequest}
-                                                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                                            >
-                                                Request To Attend
-                                            </button>
-                                        )}
-                                {(event.status && event.status && event.status.status >= 3) &&
+                                <h1 className="text-3xl font-bold">
+                                    {visibility} {event.title}
+                                </h1>
+                                <p className="text-gray-500 italic">
+                                    When: {new Date(event.start_time).toLocaleDateString()}{" "}
+                                    {new Date(event.start_time).toLocaleTimeString()}
+                                </p>
+                                {event.location && (
+                                    <p className="text-gray-500 italic">Where: {event.location}</p>
+                                )}
+                                {event.status && event.status.status >= 0 && event.status.status < 4 ? (
+                                    <button
+                                        onClick={handleJoinRequest}
+                                        className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                                        aria-label={
+                                            event.status.status === 0
+                                                ? "Cancel Request"
+                                                : "Leave Event"
+                                        }
+                                    >
+                                        {event.status.status === 0 ? "Cancel Request" : "Leave Event"}
+                                    </button>
+                                ) : event.status && event.status.status === 4 ? (
+                                    <button
+                                        disabled
+                                        className="mt-2 px-4 py-2 bg-gray-300 text-gray-900 rounded-md"
+                                    >
+                                        Cannot Leave Event You Created
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleJoinRequest}
+                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                        aria-label="Request To Attend"
+                                    >
+                                        Request To Attend
+                                    </button>
+                                )}
+                                {event.status && event.status.status >= 3 && (
                                     <a
                                         href={`/events/${event_id}/invite`}
                                         className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                        aria-label="Add users to group"
                                     >
                                         Add users to group
                                     </a>
-                                }
+                                )}
                             </div>
-                        </div>
-                        <div>
+                        </header>
+                        <article>
                             <p>{event.description}</p>
-                        </div>
-
-                        {event.google_link &&
-                            <div className="mt-2"><AddToCalendarButton googleEventUrl={event.google_link}/></div>}
-                    </div>
-                    {((event.price > 0 || event.pay_what_you_want) && event.status && !event.status.paid && currentUserContext && currentUserContext.user && event.status.status >= 1) &&
-                        <div className="max-w-2xl mx-auto p-4 mt-4 bg-white shadow-md rounded-lg">
-                            <EventPayment eventId={event.id} price={event.price} userId={currentUserContext.user.id}
-                                          payWhatYouWant={event.pay_what_you_want}
-                                          confirmPayment={handleSuccessfulPayment}/>
-                        </div>
-                    }
-                    {(event.status && event.status.paid) &&
-                        <div className="max-w-2xl mx-auto p-4 mt-4 bg-white shadow-md rounded-lg divide-y space-y-2">
+                        </article>
+                        {event.google_link && (
+                            <div className="mt-2">
+                                <AddToCalendarButton googleEventUrl={event.google_link}/>
+                            </div>
+                        )}
+                    </section>
+                    {(event.price > 0 || event.pay_what_you_want) &&
+                        event.status &&
+                        !event.status.paid &&
+                        currentUserContext &&
+                        currentUserContext.user &&
+                        event.status.status >= 1 && (
+                            <section className="max-w-2xl mx-auto p-4 mt-4 bg-white shadow-md rounded-lg">
+                                <EventPayment
+                                    eventId={event.id}
+                                    price={event.price}
+                                    userId={currentUserContext.user.id}
+                                    payWhatYouWant={event.pay_what_you_want}
+                                    confirmPayment={handleSuccessfulPayment}
+                                />
+                            </section>
+                        )}
+                    {event.status && event.status.paid && (
+                        <section
+                            className="max-w-2xl mx-auto p-4 mt-4 bg-white shadow-md rounded-lg divide-y space-y-2">
                             <p className="text-2xl font-bold">You're good to go!</p>
-                            <p className="">We've received your payment of <span
-                                className="font-semibold">£{event.status.amount_paid}</span>!</p>
-                        </div>
-                    }
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto py-4">
-                        <div>
+                            <p>
+                                We've received your payment of{" "}
+                                <span className="font-semibold">£{event.status.amount_paid}</span>!
+                            </p>
+                        </section>
+                    )}
+                    <section className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto py-4">
+                        <article>
                             <h2 className="text-xl font-bold pb-2">Group Info</h2>
                             <GroupPreview group={event.group}/>
-                        </div>
-                        <div>
+                        </article>
+                        <article>
                             <h2 className="text-xl font-bold pb-2">Creator Info</h2>
                             <UserPreview user={event.creator}/>
-                        </div>
-                    </div>
+                        </article>
+                    </section>
                 </>
-            }
+            )}
         </>
     );
 };
@@ -182,6 +215,7 @@ const AddToCalendarButton = ({googleEventUrl}: { googleEventUrl: string }) => {
         <a
             href={googleEventUrl}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            aria-label="Add to Google Calendar"
         >
             Add to Google Calendar
         </a>

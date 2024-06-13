@@ -11,7 +11,7 @@ export const Groups = () => {
 
     useEffect(() => {
         if (currentUserContext && currentUserContext.accessToken) {
-            currentUserContext.checkTokenStatus()
+            currentUserContext.checkTokenStatus();
             getGroups(currentUserContext.accessToken)
                 .then(data => setGroups(data.groups))
                 .catch(error => console.error("Error fetching groups", error));
@@ -20,24 +20,25 @@ export const Groups = () => {
 
     return (
         <>
-            <div className="flex flex-row space-x-2 align-middle">
-                <h1 className="flex items-center mb-1 text-2xl font-bold">Groups</h1>
+            <header className="flex flex-row space-x-2 items-center">
+                <h1 className="text-2xl font-bold">Groups</h1>
                 <a
-                    href={`/groups/new`}
-                    className="flex m-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                    href="/groups/new"
+                    className="m-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    aria-label="Create a Group"
                 >
                     Create a Group
                 </a>
-            </div>
-            {groups.length === 0 &&
-                <div>Loading Groups</div>}
-            {groups &&
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+            </header>
+            {groups.length === 0 ? (
+                <div>Loading Groups</div>
+            ) : (
+                <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
                     {groups.map((group) => (
                         <GroupPreview key={group.id} group={group}/>
                     ))}
-                </div>
-            }
+                </section>
+            )}
         </>
     );
 };

@@ -15,6 +15,6 @@ export const UserSignOut = () => {
         }
     }, [navigator, currentUserContext]);
     return (
-        <h2 className="text-2xl font-bold mb-4">Signing Out...</h2>
+        <h1 className="text-2xl font-bold mb-4">Signing Out...</h1>
     );
 };

@@ -10,7 +10,6 @@ const handleResponse = async (response: Response) => {
 };
 
 const signUserIn = async (username: string, password: string) => {
-    console.log(`Calling ${baseURL}/auth/signin with username ${username}`);
     const response = await fetch(`${baseURL}/auth/signin`, {
         method: "POST",
         headers,
