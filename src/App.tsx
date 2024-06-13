@@ -16,15 +16,17 @@ import {Users} from "./pages/Users.tsx";
 import {EditEvent} from "./pages/EditEvent.tsx";
 import {GroupInvites} from "./pages/GroupInvites.tsx";
 import {EventInvites} from "./pages/EventInvites.tsx";
+import {Error} from "./pages/Error.tsx";
 
 function App() {
 
     return (
-        <>
+        <div className="flex flex-col min-h-screen">
             <NavBar/>
-            <div className="container mx-auto px-4 py-8 max-w-screen-xl">
+            <div className="container mx-auto px-4 py-4 max-w-screen-xl flex flex-grow flex-col">
                 <Routes>
                     <Route path="/" element={<Home/>}/>
+                    <Route path="/error" element={<Error/>}/>
                     <Route path="/groups" element={<Groups/>}/>
                     <Route path="/groups/new" element={<NewGroup/>}/>
                     <Route path="/groups/:group_id" element={<Group/>}/>
@@ -42,8 +44,8 @@ function App() {
                     <Route path="/signout" element={<UserSignOut/>}/>
                 </Routes>
             </div>
-        </>
+        </div>
     );
 }
 
-export default App
+export default App;
