@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import {getUser, unfollowUser, followUser, updateUserNote, getUserGroups} from "../services/API.ts";
 import UserInterface from "../interfaces/UserInterface.ts";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {GroupPreview} from "../components/Groups/GroupPreview.tsx";
 import GroupInterface from "../interfaces/GroupInterface.ts";
 
@@ -69,7 +69,7 @@ export const User = () => {
                 </section>
             )}
             {user && (
-                <article className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg">
+                <article className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg w-full">
                     <header className="flex items-center mb-4">
                         {user.avatar ? (
                             <img
@@ -86,22 +86,33 @@ export const User = () => {
                         )}
                         <div>
                             <h1 className="text-3xl font-bold">{user.display_name}</h1>
-                            <p className="text-gray-500 italic">@{user.username}</p>
-                            {user.contact ? (
-                                <button
-                                    onClick={handleFollowToggle}
-                                    className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                            <p className="text-gray-500 italic mb-2">@{user.username}</p>
+                            {user.id === currentUserContext?.user?.id ?
+                                <Link
+                                    to={"/profile"}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                                 >
-                                    Unfollow
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={handleFollowToggle}
-                                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                                >
-                                    Follow
-                                </button>
-                            )}
+                                    Edit
+                                </Link>
+                                :
+                                (
+                                    user.contact ? (
+                                        <button
+                                            onClick={handleFollowToggle}
+                                            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                                        >
+                                            Unfollow
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={handleFollowToggle}
+                                            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                        >
+                                            Follow
+                                        </button>
+                                    )
+                                )
+                            }
                         </div>
                     </header>
                     <p className="text-gray-700 mb-4">{user.about}</p>
