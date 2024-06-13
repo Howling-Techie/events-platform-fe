@@ -39,7 +39,7 @@ export const EditGroup = () => {
                 })
                 .catch(error => console.error("Error fetching group", error));
         }
-    }, [currentUserContext, group_id]);
+    }, [currentUserContext, group_id, navigate]);
 
     const handleUpdateGroup = () => {
         if (!group || !currentUserContext || !currentUserContext.accessToken)

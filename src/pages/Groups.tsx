@@ -3,6 +3,7 @@ import {UserContext} from "../contexts/UserContext.tsx";
 import GroupInterface from "../interfaces/GroupInterface.ts";
 import {getGroups} from "../services/API.ts";
 import {GroupPreview} from "../components/Groups/GroupPreview.tsx";
+import {Link} from "react-router-dom";
 
 export const Groups = () => {
     const currentUserContext = useContext(UserContext);
@@ -24,13 +25,13 @@ export const Groups = () => {
         <>
             <header className="flex flex-row space-x-2 items-center">
                 <h1 className="text-2xl font-bold">Groups</h1>
-                {currentUserContext && currentUserContext.user && <a
-                    href="/groups/new"
+                {currentUserContext && currentUserContext.user && <Link
+                    to="/groups/new"
                     className="m-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
                     aria-label="Create a Group"
                 >
                     Create a Group
-                </a>
+                </Link>
                 }
             </header>
             {!groups ? (

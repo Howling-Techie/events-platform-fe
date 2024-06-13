@@ -36,7 +36,7 @@ export const Event = () => {
                     navigate(`/error?code=${error.status}&message=${error.data.msg}`);
                 });
         }
-    }, [currentUserContext, event_id]);
+    }, [currentUserContext, event_id, navigate]);
 
     const handleJoinRequest = () => {
         if (currentUserContext && currentUserContext.accessToken && event) {

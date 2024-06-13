@@ -1,4 +1,5 @@
 import GroupInterface from "../../interfaces/GroupInterface.ts";
+import {Link} from "react-router-dom";
 
 interface GroupPreviewProps {
     group: GroupInterface;
@@ -6,9 +7,9 @@ interface GroupPreviewProps {
 
 export const GroupPreview = ({group}: GroupPreviewProps) => {
     return (
-        <a
+        <Link
             className="border rounded-lg p-4 flex flex-col items-center bg-white shadow-md cursor-pointer"
-            href={`/groups/${group.id}`}
+            to={`/groups/${group.id}`}
         >
             <div className="flex items-center mb-4">
                 {group.avatar ? (
@@ -23,6 +24,6 @@ export const GroupPreview = ({group}: GroupPreviewProps) => {
                 </div>
             </div>
             <p className="text-gray-600 text-sm text-center line-clamp-2">{group.about}</p>
-        </a>
+        </Link>
     );
 };

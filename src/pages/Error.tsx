@@ -1,4 +1,4 @@
-import {useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 
 export const Error = () => {
     const location = useLocation();
@@ -12,12 +12,12 @@ export const Error = () => {
                 <h2 className="text-3xl font-bold text-center mb-4">{errorCode}</h2>
                 <p className="text-lg text-center mb-8">{errorMessage}</p>
                 <div className="flex justify-center">
-                    <a
+                    <Link
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        href={"/"}
+                        to={"/"}
                     >
                         Go Home
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

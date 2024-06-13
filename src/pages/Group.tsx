@@ -1,4 +1,4 @@
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import GroupInterface from "../interfaces/GroupInterface.ts";
@@ -98,13 +98,13 @@ export const Group = () => {
                                 )
                             )}
                             {group.user_access_level && group.user_access_level > 1 && (
-                                <a
-                                    href={`/groups/${group_id}/invite`}
+                                <Link
+                                    to={`/groups/${group_id}/invite`}
                                     className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
                                     aria-label="Add users to group"
                                 >
                                     Add users to group
-                                </a>
+                                </Link>
                             )}
                         </div>
                     </header>

@@ -1,4 +1,5 @@
 import EventInterface from "../../interfaces/EventInterface.ts";
+import {Link} from "react-router-dom";
 
 interface EventPreviewProps {
     event: EventInterface;
@@ -6,9 +7,9 @@ interface EventPreviewProps {
 
 export const EventPreview = ({event}: EventPreviewProps) => {
     return (
-        <a
+        <Link
             className="border rounded-lg p-4 flex flex-col items-center bg-white shadow-md cursor-pointer"
-            href={`/events/${event.id}`}
+            to={`/events/${event.id}`}
         >
             <div className="flex items-center mb-4">
                 {event.group.avatar ? (
@@ -24,6 +25,6 @@ export const EventPreview = ({event}: EventPreviewProps) => {
                 </div>
             </div>
             <p className="text-gray-600 text-sm text-center line-clamp-2">{event.description}</p>
-        </a>
+        </Link>
     );
 };
