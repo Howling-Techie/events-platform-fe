@@ -13,10 +13,10 @@ export const EditEvent = () => {
 
     const [event, setEvent] = useState<EventInterface>();
     const [eventUsers, setEventUsers] = useState<EventUserInterface[]>();
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [location, setLocation] = useState('');
-    const [startTime, setStartTime] = useState('');
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [location, setLocation] = useState("");
+    const [startTime, setStartTime] = useState("");
     const [visibility, setVisibility] = useState(0);
     const [pastStartTime, setPastStartTime] = useState(false);
 
@@ -36,7 +36,6 @@ export const EditEvent = () => {
                 .catch(error => console.error("Error fetching event", error));
             getEventUsers(+event_id, currentUserContext.accessToken)
                 .then((data) => {
-                    console.log(data)
                     setEventUsers(data.users);
                 })
                 .catch(error => console.error("Error fetching group", error));
@@ -47,12 +46,12 @@ export const EditEvent = () => {
         if (!event || !currentUserContext || !currentUserContext.accessToken)
             return;
         if (!title.trim()) {
-            alert('Title cannot be empty');
+            alert("Title cannot be empty");
             return;
         }
 
         if (new Date(startTime) < new Date()) {
-            alert('Event start time must be in the future');
+            alert("Event start time must be in the future");
             return;
         }
 
@@ -66,7 +65,7 @@ export const EditEvent = () => {
         };
         updateEvent(updatedEvent, currentUserContext.accessToken)
             .then(() => {
-                alert('Event updated successfully');
+                alert("Event updated successfully");
                 navigate(`/events/${event_id}`);
             })
             .catch(error => console.error("Error updating event", error));
@@ -86,7 +85,7 @@ export const EditEvent = () => {
                     };
                     return newState;
                 }
-            })
+            });
         })
             .catch(error => console.error("Error updating user", error));
     };
@@ -102,7 +101,7 @@ export const EditEvent = () => {
                     newState.splice(userIndex, 1);
                     return newState;
                 }
-            })
+            });
         })
             .catch(error => console.error("Error updating user", error));
     };
@@ -118,7 +117,7 @@ export const EditEvent = () => {
                     newState.splice(userIndex, 1);
                     return newState;
                 }
-            })
+            });
         })
             .catch(error => console.error("Error updating user", error));
     };
@@ -135,10 +134,9 @@ export const EditEvent = () => {
                         ...newState[userIndex],
                         status: data.status
                     };
-                    console.log(newState)
                     return newState;
                 }
-            })
+            });
         })
             .catch(error => console.error("Error updating user", error));
     };
@@ -157,92 +155,101 @@ export const EditEvent = () => {
                     };
                     return newState;
                 }
-            })
+            });
         })
             .catch(error => console.error("Error updating user", error));
     };
 
     return (
         <>
-            <div className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
+            <section className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
                 <h1 className="text-3xl font-bold mb-6 text-center">Edit Event</h1>
-                {event && <>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2" htmlFor="title">
-                            Title
-                        </label>
-                        <input
-                            id="title"
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="w-full p-2 border rounded-md"
-                            placeholder="Enter event title"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2" htmlFor="description">
-                            Description
-                        </label>
-                        <textarea
-                            id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full p-2 border rounded-md"
-                            placeholder="Describe your event"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2" htmlFor="location">
-                            Location
-                        </label>
-                        <input
-                            id="location"
-                            type="text"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            className="w-full p-2 border rounded-md"
-                            placeholder="Enter event location"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2" htmlFor="startTime">
-                            Event Start Time
-                        </label>
-                        <input
-                            id="startTime"
-                            type="datetime-local"
-                            value={startTime}
-                            onChange={(e) => setStartTime(e.target.value)}
-                            className="w-full p-2 border rounded-md"
-                            disabled={pastStartTime}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2" htmlFor="visibility">
-                            Visibility
-                        </label>
-                        <select
-                            id="visibility"
-                            value={visibility}
-                            onChange={(e) => setVisibility(+e.target.value)}
-                            className="w-full p-2 border rounded-md"
+                {event && (
+                    <form>
+                        <fieldset className="mb-4">
+                            <legend className="block text-gray-700 font-bold mb-2" id="title-legend">
+                                Title
+                            </legend>
+                            <input
+                                id="title"
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="w-full p-2 border rounded-md"
+                                placeholder="Enter event title"
+                                aria-labelledby="title-legend"
+                            />
+                        </fieldset>
+                        <fieldset className="mb-4">
+                            <legend className="block text-gray-700 font-bold mb-2" id="description-legend">
+                                Description
+                            </legend>
+                            <textarea
+                                id="description"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                className="w-full p-2 border rounded-md"
+                                placeholder="Describe your event"
+                                aria-labelledby="description-legend"
+                            />
+                        </fieldset>
+                        <fieldset className="mb-4">
+                            <legend className="block text-gray-700 font-bold mb-2" id="location-legend">
+                                Location
+                            </legend>
+                            <input
+                                id="location"
+                                type="text"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                className="w-full p-2 border rounded-md"
+                                placeholder="Enter event location"
+                                aria-labelledby="location-legend"
+                            />
+                        </fieldset>
+                        <fieldset className="mb-4">
+                            <legend className="block text-gray-700 font-bold mb-2" id="startTime-legend">
+                                Event Start Time
+                            </legend>
+                            <input
+                                id="startTime"
+                                type="datetime-local"
+                                value={startTime}
+                                onChange={(e) => setStartTime(e.target.value)}
+                                className="w-full p-2 border rounded-md"
+                                disabled={pastStartTime}
+                                aria-labelledby="startTime-legend"
+                            />
+                        </fieldset>
+                        <fieldset className="mb-4">
+                            <legend className="block text-gray-700 font-bold mb-2" id="visibility-legend">
+                                Visibility
+                            </legend>
+                            <select
+                                id="visibility"
+                                value={visibility}
+                                onChange={(e) => setVisibility(+e.target.value)}
+                                className="w-full p-2 border rounded-md"
+                                aria-labelledby="visibility-legend"
+                            >
+                                <option value={0}>Public</option>
+                                <option value={1}>Users Require Approval</option>
+                                <option value={2}>Invite Only</option>
+                            </select>
+                        </fieldset>
+                        <button
+                            type="button"
+                            onClick={handleUpdateEvent}
+                            className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+                            aria-label="Update Event"
                         >
-                            <option value={0}>Public</option>
-                            <option value={1}>Users Require Approval</option>
-                            <option value={2}>Invite Only</option>
-                        </select>
-                    </div>
-                    <button
-                        onClick={handleUpdateEvent}
-                        className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
-                    >
-                        Update
-                    </button>
-                </>}
-            </div>
-            {eventUsers &&
-                <div className="mt-2">
+                            Update
+                        </button>
+                    </form>
+                )}
+            </section>
+            {eventUsers && (
+                <section className="mt-2">
                     <EventUserManager
                         eventUsers={eventUsers}
                         onApproveRequest={handleApproveRequest}
@@ -251,7 +258,9 @@ export const EditEvent = () => {
                         onPromoteToModerator={handlePromoteToModerator}
                         onDemoteToUser={handleDemoteToUser}
                     />
-                </div>}
+                </section>
+            )}
         </>
+
     );
 };

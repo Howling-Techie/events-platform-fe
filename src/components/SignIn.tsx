@@ -16,7 +16,6 @@ export const SignIn = ({toggleForm, showPopup}: {
         e.preventDefault();
         showPopup("Please wait", "Signing in...", "info", false);
         const response = await currentUserContext?.signIn(formData.username, formData.password);
-        console.log(response);
         if (response?.success) {
             showPopup("Success", "Signing in...", "success", false);
         } else {

@@ -7,13 +7,13 @@ export const NewGroup = () => {
     const currentUserContext = useContext(UserContext);
     const navigate = useNavigate();
 
-    const [groupName, setGroupName] = useState('');
-    const [about, setAbout] = useState('');
+    const [groupName, setGroupName] = useState("");
+    const [about, setAbout] = useState("");
     const [visibility, setVisibility] = useState(0);
 
     const handleCreateGroup = () => {
         if (!groupName.trim()) {
-            alert('Group name cannot be empty');
+            alert("Group name cannot be empty");
             return;
         }
         const newGroup = {
@@ -35,7 +35,7 @@ export const NewGroup = () => {
         <div className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
             <h1 className="text-3xl font-bold mb-6 text-center">Create New Group</h1>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="groupName">
+                <label htmlFor="groupName" className="block text-gray-700 font-bold mb-2">
                     Group Name
                 </label>
                 <input
@@ -45,10 +45,11 @@ export const NewGroup = () => {
                     onChange={(e) => setGroupName(e.target.value)}
                     className="w-full p-2 border rounded-md"
                     placeholder="Enter group name"
+                    aria-label="Group Name"
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="about">
+                <label htmlFor="about" className="block text-gray-700 font-bold mb-2">
                     About
                 </label>
                 <textarea
@@ -57,10 +58,11 @@ export const NewGroup = () => {
                     onChange={(e) => setAbout(e.target.value)}
                     className="w-full p-2 border rounded-md"
                     placeholder="Describe your group"
+                    aria-label="Group Description"
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="visibility">
+                <label htmlFor="visibility" className="block text-gray-700 font-bold mb-2">
                     Visibility
                 </label>
                 <select
@@ -68,6 +70,7 @@ export const NewGroup = () => {
                     value={visibility}
                     onChange={(e) => setVisibility(+e.target.value)}
                     className="w-full p-2 border rounded-md"
+                    aria-label="Group Visibility"
                 >
                     <option value={0}>Public</option>
                     <option value={1}>Users Require Approval</option>
@@ -77,6 +80,7 @@ export const NewGroup = () => {
             <button
                 onClick={handleCreateGroup}
                 className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                aria-label="Create Group Button"
             >
                 Create Group
             </button>

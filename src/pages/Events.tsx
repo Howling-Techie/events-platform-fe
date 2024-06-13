@@ -20,24 +20,24 @@ export const Events = () => {
 
     return (
         <>
-            <div className="flex flex-row space-x-2 align-middle">
-                <h1 className="flex items-center mb-1 text-2xl font-bold">Events</h1>
+            <header className="flex flex-row space-x-2 items-center">
+                <h1 className="text-2xl font-bold">Events</h1>
                 <a
-                    href={`/events/new`}
-                    className="flex m-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                    href="/events/new"
+                    className="m-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    aria-label="Create an Event"
                 >
                     Create an Event
                 </a>
-            </div>
-            {events.length === 0 &&
-                <div>Loading Events</div>}
-            {events &&
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+            </header>
+            {events.length === 0 && <div>Loading Events</div>}
+            {events && (
+                <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
                     {events.map((event) => (
                         <EventPreview key={event.id} event={event}/>
                     ))}
-                </div>
-            }
+                </section>
+            )}
         </>
     );
 };

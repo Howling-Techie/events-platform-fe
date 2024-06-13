@@ -13,8 +13,8 @@ export const EditGroup = () => {
 
     const [group, setGroup] = useState<GroupInterface>();
     const [groupUsers, setGroupUsers] = useState<GroupUserInterface[]>();
-    const [name, setName] = useState('');
-    const [about, setAbout] = useState('');
+    const [name, setName] = useState("");
+    const [about, setAbout] = useState("");
     const [visibility, setVisibility] = useState(0);
 
     useEffect(() => {
@@ -30,7 +30,6 @@ export const EditGroup = () => {
                 .catch(error => console.error("Error fetching group", error));
             getGroupUsers(+group_id, currentUserContext.accessToken)
                 .then((data) => {
-                    console.log(data)
                     setGroupUsers(data.users);
                 })
                 .catch(error => console.error("Error fetching group", error));
@@ -41,7 +40,7 @@ export const EditGroup = () => {
         if (!group || !currentUserContext || !currentUserContext.accessToken)
             return;
         if (!name.trim()) {
-            alert('Name cannot be empty');
+            alert("Name cannot be empty");
             return;
         }
 
@@ -53,7 +52,7 @@ export const EditGroup = () => {
         };
         updateGroup(updatedGroup, currentUserContext.accessToken)
             .then(() => {
-                alert('Group updated successfully');
+                alert("Group updated successfully");
                 navigate(`/groups/${group_id}`);
             })
             .catch(error => console.error("Error updating group", error));
@@ -74,7 +73,7 @@ export const EditGroup = () => {
                     };
                     return newState;
                 }
-            })
+            });
         })
             .catch(error => console.error("Error updating user", error));
     };
@@ -90,7 +89,7 @@ export const EditGroup = () => {
                     newState.splice(userIndex, 1);
                     return newState;
                 }
-            })
+            });
         })
             .catch(error => console.error("Error updating user", error));
     };
@@ -106,7 +105,7 @@ export const EditGroup = () => {
                     newState.splice(userIndex, 1);
                     return newState;
                 }
-            })
+            });
         })
             .catch(error => console.error("Error updating user", error));
     };
@@ -117,18 +116,15 @@ export const EditGroup = () => {
         updateGroupUser(userId, group.id, 2, currentUserContext.accessToken).then(data => {
             setGroupUsers(prevState => {
                 if (prevState) {
-                    console.log(prevState)
-                    console.log(data)
                     const newState = [...prevState];
                     const userIndex = newState.findIndex(u => u.user.id == userId);
                     newState[userIndex] = {
                         ...newState[userIndex],
                         user_access: data.status.access_level
                     };
-                    console.log(newState)
                     return newState;
                 }
-            })
+            });
         })
             .catch(error => console.error("Error updating user", error));
     };
@@ -147,68 +143,74 @@ export const EditGroup = () => {
                     };
                     return newState;
                 }
-            })
+            });
         })
             .catch(error => console.error("Error updating user", error));
     };
 
     return (
         <>
-            <div className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
+            <section className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
                 <h1 className="text-3xl font-bold mb-6 text-center">Edit Group</h1>
-                {group && <>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2" htmlFor="title">
-                            Name
-                        </label>
-                        <input
-                            id="name"
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full p-2 border rounded-md"
-                            placeholder="Enter group name"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2" htmlFor="description">
-                            About
-                        </label>
-                        <textarea
-                            id="about"
-                            value={about}
-                            onChange={(e) => setAbout(e.target.value)}
-                            className="w-full p-2 border rounded-md"
-                            placeholder="Describe your group"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-bold mb-2" htmlFor="visibility">
-                            Visibility
-                        </label>
-                        <select
-                            id="visibility"
-                            value={visibility}
-                            onChange={(e) => setVisibility(+e.target.value)}
-                            className="w-full p-2 border rounded-md"
+                {group && (
+                    <form>
+                        <fieldset className="mb-4">
+                            <legend className="block text-gray-700 font-bold mb-2" id="name-legend">
+                                Name
+                            </legend>
+                            <input
+                                id="name"
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="w-full p-2 border rounded-md"
+                                placeholder="Enter group name"
+                                aria-labelledby="name-legend"
+                            />
+                        </fieldset>
+                        <fieldset className="mb-4">
+                            <legend className="block text-gray-700 font-bold mb-2" id="about-legend">
+                                About
+                            </legend>
+                            <textarea
+                                id="about"
+                                value={about}
+                                onChange={(e) => setAbout(e.target.value)}
+                                className="w-full p-2 border rounded-md"
+                                placeholder="Describe your group"
+                                aria-labelledby="about-legend"
+                            />
+                        </fieldset>
+                        <fieldset className="mb-4">
+                            <legend className="block text-gray-700 font-bold mb-2" id="visibility-legend">
+                                Visibility
+                            </legend>
+                            <select
+                                id="visibility"
+                                value={visibility}
+                                onChange={(e) => setVisibility(+e.target.value)}
+                                className="w-full p-2 border rounded-md"
+                                aria-labelledby="visibility-legend"
+                            >
+                                <option value={0}>Public</option>
+                                <option value={1}>Users Require Approval</option>
+                                <option value={2}>Invite Only</option>
+                            </select>
+                        </fieldset>
+                        <button
+                            type="button"
+                            onClick={handleUpdateGroup}
+                            className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+                            aria-label="Update Group"
                         >
-                            <option value={0}>Public</option>
-                            <option value={1}>Users Require Approval</option>
-                            <option value={2}>Invite Only</option>
-                        </select>
-                    </div>
-                    <button
-                        onClick={handleUpdateGroup}
-                        className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
-                    >
-                        Update
-                    </button>
-                </>
-                }
-            </div>
+                            Update
+                        </button>
+                    </form>
+                )}
+            </section>
 
-            {groupUsers &&
-                <div className="mt-2">
+            {groupUsers && (
+                <section className="mt-2">
                     <GroupUserManager
                         groupUsers={groupUsers}
                         onApproveRequest={handleApproveRequest}
@@ -217,7 +219,9 @@ export const EditGroup = () => {
                         onPromoteToModerator={handlePromoteToModerator}
                         onDemoteToUser={handleDemoteToUser}
                     />
-                </div>}
+                </section>
+            )}
         </>
+
     );
 };

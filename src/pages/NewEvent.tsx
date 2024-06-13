@@ -9,10 +9,10 @@ export const NewEvent = () => {
     const navigate = useNavigate();
 
     const [groups, setGroups] = useState<GroupInterface[]>();
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [location, setLocation] = useState('');
-    const [startTime, setStartTime] = useState('');
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [location, setLocation] = useState("");
+    const [startTime, setStartTime] = useState("");
     const [visibility, setVisibility] = useState(0);
     const [group, setGroup] = useState(0);
 
@@ -21,9 +21,9 @@ export const NewEvent = () => {
             currentUserContext.checkTokenStatus();
             getGroups(currentUserContext.accessToken)
                 .then(data => {
-                    const groupData = data.groups.filter(g => g.owner_id === currentUserContext.user?.id || g.user_access_level && g.user_access_level > 2)
+                    const groupData = data.groups.filter(g => g.owner_id === currentUserContext.user?.id || g.user_access_level && g.user_access_level > 2);
                     setGroups(groupData);
-                    setGroup(groupData[0].id)
+                    setGroup(groupData[0].id);
                 })
                 .catch(error => console.error("Error fetching groups", error));
         }
@@ -31,12 +31,12 @@ export const NewEvent = () => {
 
     const handleCreateEvent = () => {
         if (!title.trim()) {
-            alert('Event title cannot be empty');
+            alert("Event title cannot be empty");
             return;
         }
 
         if (startTime.length < 1 || new Date(startTime) <= new Date()) {
-            alert('Event start time must be in the future');
+            alert("Event start time must be in the future");
             return;
         }
         const newEvent = {
@@ -61,7 +61,7 @@ export const NewEvent = () => {
         <div className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
             <h1 className="text-3xl font-bold mb-6 text-center">Create New Event</h1>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="title">
+                <label htmlFor="title" className="block text-gray-700 font-bold mb-2">
                     Title
                 </label>
                 <input
@@ -71,10 +71,11 @@ export const NewEvent = () => {
                     onChange={(e) => setTitle(e.target.value)}
                     className="w-full p-2 border rounded-md"
                     placeholder="Enter event title"
+                    aria-label="Event Title"
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="description">
+                <label htmlFor="description" className="block text-gray-700 font-bold mb-2">
                     Description
                 </label>
                 <textarea
@@ -83,10 +84,11 @@ export const NewEvent = () => {
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full p-2 border rounded-md"
                     placeholder="Describe your event"
+                    aria-label="Event Description"
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="visibility">
+                <label htmlFor="visibility" className="block text-gray-700 font-bold mb-2">
                     Visibility
                 </label>
                 <select
@@ -94,43 +96,51 @@ export const NewEvent = () => {
                     value={visibility}
                     onChange={(e) => setVisibility(+e.target.value)}
                     className="w-full p-2 border rounded-md"
+                    aria-label="Event Visibility"
                 >
                     <option value={0}>Public</option>
                     <option value={1}>Users Require Approval</option>
                     <option value={2}>Invite Only</option>
                 </select>
             </div>
-            {!groups && <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="visibility">
-                    Group
-                </label>
-                <select
-                    id="group"
-                    value={group}
-                    onChange={(e) => setGroup(+e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                    disabled={true}
-                >
-                    <option value={0}>Loading Groups...</option>
-                </select>
-            </div>}
-            {groups && <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="visibility">
-                    Group
-                </label>
-                <select
-                    id="group"
-                    value={group}
-                    onChange={(e) => setGroup(+e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                >
-                    {groups.map(g =>
-                        <option value={g.id} key={g.id}>{g.name}</option>
-                    )}
-                </select>
-            </div>}
+            {!groups ? (
+                <div className="mb-4">
+                    <label htmlFor="group" className="block text-gray-700 font-bold mb-2">
+                        Group
+                    </label>
+                    <select
+                        id="group"
+                        value={group}
+                        onChange={(e) => setGroup(+e.target.value)}
+                        className="w-full p-2 border rounded-md"
+                        disabled
+                        aria-label="Loading Groups"
+                    >
+                        <option value={0}>Loading Groups...</option>
+                    </select>
+                </div>
+            ) : (
+                <div className="mb-4">
+                    <label htmlFor="group" className="block text-gray-700 font-bold mb-2">
+                        Group
+                    </label>
+                    <select
+                        id="group"
+                        value={group}
+                        onChange={(e) => setGroup(+e.target.value)}
+                        className="w-full p-2 border rounded-md"
+                        aria-label="Select Group"
+                    >
+                        {groups.map((g) => (
+                            <option value={g.id} key={g.id}>
+                                {g.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="location">
+                <label htmlFor="location" className="block text-gray-700 font-bold mb-2">
                     Location
                 </label>
                 <input
@@ -140,10 +150,11 @@ export const NewEvent = () => {
                     onChange={(e) => setLocation(e.target.value)}
                     className="w-full p-2 border rounded-md"
                     placeholder="Enter event location"
+                    aria-label="Event Location"
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="startTime">
+                <label htmlFor="startTime" className="block text-gray-700 font-bold mb-2">
                     Event Start Time
                 </label>
                 <input
@@ -152,11 +163,13 @@ export const NewEvent = () => {
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
                     className="w-full p-2 border rounded-md"
+                    aria-label="Event Start Time"
                 />
             </div>
             <button
                 onClick={handleCreateEvent}
                 className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                aria-label="Create Event Button"
             >
                 Create Event
             </button>
