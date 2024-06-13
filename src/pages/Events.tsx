@@ -32,11 +32,25 @@ export const Events = () => {
             </header>
             {!events ? (<div>Loading Events</div>)
                 : (
-                    <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-                        {events.map((event) => (
-                            <EventPreview key={event.id} event={event}/>
-                        ))}
-                    </section>
+                    <div className="space-y-1 divide-y divide-gray-300">
+                        {currentUserContext && currentUserContext.user && <div>
+                            <h2 className="text-lg font-semibold">Your Events</h2>
+                            <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+                                {events.filter(g => g.status).map((event) => (
+                                    <EventPreview key={event.id} event={event}/>
+                                ))}
+                            </section>
+                        </div>
+                        }
+                        <div>
+                            <h2 className="text-lg font-semibold mt-2">Public Events</h2>
+                            <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+                                {events.filter(g => !g.status).map((event) => (
+                                    <EventPreview key={event.id} event={event}/>
+                                ))}
+                            </section>
+                        </div>
+                    </div>
                 )}
         </>
     );
