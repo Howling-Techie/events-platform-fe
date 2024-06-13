@@ -30,14 +30,27 @@ export const Groups = () => {
                     Create a Group
                 </a>
             </header>
-            {groups.length === 0 ? (
+            {!groups ? (
                 <div>Loading Groups</div>
             ) : (
-                <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-                    {groups.map((group) => (
-                        <GroupPreview key={group.id} group={group}/>
-                    ))}
-                </section>
+                <div className="space-y-1 divide-y divide-gray-300">
+                    <div>
+                        <h2 className="text-lg font-semibold">Your Groups</h2>
+                        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+                            {groups.filter(g => g.user_access_level).map((group) => (
+                                <GroupPreview key={group.id} group={group}/>
+                            ))}
+                        </section>
+                    </div>
+                    <div>
+                        <h2 className="text-lg font-semibold mt-2">Public Groups</h2>
+                        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+                            {groups.filter(g => !g.user_access_level).map((group) => (
+                                <GroupPreview key={group.id} group={group}/>
+                            ))}
+                        </section>
+                    </div>
+                </div>
             )}
         </>
     );
