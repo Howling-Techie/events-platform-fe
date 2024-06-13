@@ -21,10 +21,13 @@ export const EditEvent = () => {
     const [pastStartTime, setPastStartTime] = useState(false);
 
     useEffect(() => {
-        if (currentUserContext && currentUserContext.accessToken && event_id) {
+        if (currentUserContext && event_id) {
             currentUserContext.checkTokenStatus();
             getEvent(+event_id, currentUserContext.accessToken)
                 .then((data) => {
+                    if (!data.event.status || data.event.status.status < 2) {
+                        navigate(`/error?code=401&message="You are not authorised to view this page"`);
+                    }
                     setEvent(data.event);
                     setTitle(data.event.title);
                     setDescription(data.event.description);
@@ -33,14 +36,16 @@ export const EditEvent = () => {
                     setVisibility(data.event.visibility);
                     setPastStartTime(new Date(data.event.start_time) < new Date());
                 })
-                .catch(error => console.error("Error fetching event", error));
+                .catch(error => {
+                    navigate(`/error?code=${error.status}&message=${error.data.msg}`);
+                });
             getEventUsers(+event_id, currentUserContext.accessToken)
                 .then((data) => {
                     setEventUsers(data.users);
                 })
-                .catch(error => console.error("Error fetching group", error));
+                .catch(error => alert(`Error getting users: ${error.data.msg}`));
         }
-    }, [currentUserContext, event_id]);
+    }, [currentUserContext, event_id, navigate]);
 
     const handleUpdateEvent = () => {
         if (!event || !currentUserContext || !currentUserContext.accessToken)
@@ -68,7 +73,7 @@ export const EditEvent = () => {
                 alert("Event updated successfully");
                 navigate(`/events/${event_id}`);
             })
-            .catch(error => console.error("Error updating event", error));
+            .catch(error => alert(`Error updating event: ${error.data.msg}`));
     };
 
     const handleApproveRequest = (userId: number) => {
@@ -87,7 +92,7 @@ export const EditEvent = () => {
                 }
             });
         })
-            .catch(error => console.error("Error updating user", error));
+            .catch(error => alert(`Error updating user: ${error.data.msg}`));
     };
 
     const handleDenyRequest = (userId: number) => {
@@ -103,7 +108,7 @@ export const EditEvent = () => {
                 }
             });
         })
-            .catch(error => console.error("Error updating user", error));
+            .catch(error => alert(`Error updating user: ${error.data.msg}`));
     };
 
     const handleKickUser = (userId: number) => {
@@ -119,7 +124,7 @@ export const EditEvent = () => {
                 }
             });
         })
-            .catch(error => console.error("Error updating user", error));
+            .catch(error => alert(`Error updating user: ${error.data.msg}`));
     };
 
     const handlePromoteToModerator = (userId: number) => {
@@ -138,7 +143,7 @@ export const EditEvent = () => {
                 }
             });
         })
-            .catch(error => console.error("Error updating user", error));
+            .catch(error => alert(`Error updating user: ${error.data.msg}`));
     };
 
     const handleDemoteToUser = (userId: number) => {
@@ -157,7 +162,7 @@ export const EditEvent = () => {
                 }
             });
         })
-            .catch(error => console.error("Error updating user", error));
+            .catch(error => alert(`Error updating user: ${error.data.msg}`));
     };
 
     return (
