@@ -2,15 +2,21 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import UserInterface from "../interfaces/UserInterface.ts";
 import {getUser, updateUser} from "../services/API.ts";
+import {useNavigate} from "react-router-dom";
 
 export const Profile = () => {
     const currentUserContext = useContext(UserContext);
     const [user, setUser] = useState<UserInterface>();
     const [newPassword, setNewPassword] = useState("");
     const [confirmNewPassword, setConfirmNewPassword] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if (currentUserContext && currentUserContext.user && currentUserContext.accessToken) {
+        if (currentUserContext && currentUserContext.loaded) {
+            if (!currentUserContext.user) {
+                navigate(`/error?code=401&message=You must be logged in to view this page`);
+                return;
+            }
             currentUserContext.checkTokenStatus();
             getUser(currentUserContext.user.username, currentUserContext.accessToken)
                 .then(data => setUser(data.user))

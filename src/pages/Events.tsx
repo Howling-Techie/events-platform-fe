@@ -10,7 +10,7 @@ export const Events = () => {
     const [events, setEvents] = useState<EventInterface[]>([]);
 
     useEffect(() => {
-        if (currentUserContext) {
+        if (currentUserContext && currentUserContext.loaded) {
             currentUserContext.checkTokenStatus();
             getEvents(currentUserContext.accessToken)
                 .then(data => setEvents(data.events))

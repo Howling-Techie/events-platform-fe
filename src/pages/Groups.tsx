@@ -10,7 +10,7 @@ export const Groups = () => {
     const [groups, setGroups] = useState<GroupInterface[]>();
 
     useEffect(() => {
-        if (currentUserContext) {
+        if (currentUserContext && currentUserContext.loaded) {
             currentUserContext.checkTokenStatus();
             getGroups(currentUserContext.accessToken)
                 .then(data => {

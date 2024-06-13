@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import GroupInterface from "../interfaces/GroupInterface.ts";
@@ -7,11 +7,12 @@ import {getGroup, joinGroup, leaveGroup} from "../services/API.ts";
 export const Group = () => {
     const currentUserContext = useContext(UserContext);
     const {group_id} = useParams();
+    const navigate = useNavigate();
 
     const [group, setGroup] = useState<GroupInterface>();
     const [visibility, setVisibility] = useState("");
     useEffect(() => {
-        if (currentUserContext && currentUserContext.accessToken && group_id) {
+        if (currentUserContext && currentUserContext.loaded && group_id) {
             currentUserContext.checkTokenStatus();
             getGroup(+group_id, currentUserContext.accessToken)
                 .then(data => {
@@ -28,9 +29,11 @@ export const Group = () => {
                             break;
                     }
                 })
-                .catch(error => console.error("Error fetching user", error));
+                .catch(error => {
+                    navigate(`/error?code=${error.status}&message=${error.data.msg}`);
+                });
         }
-    }, [currentUserContext, group_id]);
+    }, [currentUserContext, group_id, navigate]);
 
     const handleJoinRequest = () => {
         if (currentUserContext && currentUserContext.accessToken && group) {

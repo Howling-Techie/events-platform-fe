@@ -21,7 +21,7 @@ export const EditEvent = () => {
     const [pastStartTime, setPastStartTime] = useState(false);
 
     useEffect(() => {
-        if (currentUserContext && event_id) {
+        if (currentUserContext && event_id && currentUserContext.loaded) {
             currentUserContext.checkTokenStatus();
             getEvent(+event_id, currentUserContext.accessToken)
                 .then((data) => {
@@ -167,7 +167,7 @@ export const EditEvent = () => {
 
     return (
         <>
-            <section className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
+            <section className="max-w-xl w-full mx-auto p-4 bg-white shadow-md rounded-lg">
                 <h1 className="text-3xl font-bold mb-6 text-center">Edit Event</h1>
                 {event && (
                     <form>

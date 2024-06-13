@@ -10,7 +10,7 @@ export const Users = () => {
     const [users, setUsers] = useState<UserInterface[]>([]);
 
     useEffect(() => {
-        if (currentUserContext) {
+        if (currentUserContext && currentUserContext.loaded) {
             currentUserContext.checkTokenStatus();
             getUsers(currentUserContext.accessToken)
                 .then(data => setUsers(data.users))

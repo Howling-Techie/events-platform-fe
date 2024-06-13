@@ -7,7 +7,7 @@ export const UserSignOut = () => {
     const navigator = useNavigate();
 
     useEffect(() => {
-        if (currentUserContext) {
+        if (currentUserContext && currentUserContext.loaded) {
             currentUserContext.signOut();
             if (!currentUserContext.user) {
                 navigator("/");

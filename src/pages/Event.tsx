@@ -1,4 +1,4 @@
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import EventInterface from "../interfaces/EventInterface.ts";
@@ -10,11 +10,12 @@ import {EventPayment} from "../components/Events/EventPayment.tsx";
 export const Event = () => {
     const currentUserContext = useContext(UserContext);
     const {event_id} = useParams();
+    const navigate = useNavigate();
 
     const [event, setEvent] = useState<EventInterface>();
     const [visibility, setVisibility] = useState("");
     useEffect(() => {
-        if (currentUserContext && currentUserContext.accessToken && event_id) {
+        if (currentUserContext && currentUserContext.loaded && event_id) {
             currentUserContext.checkTokenStatus();
             getEvent(+event_id, currentUserContext.accessToken)
                 .then(data => {
@@ -31,7 +32,9 @@ export const Event = () => {
                             break;
                     }
                 })
-                .catch(error => console.error("Error fetching user", error));
+                .catch(error => {
+                    navigate(`/error?code=${error.status}&message=${error.data.msg}`);
+                });
         }
     }, [currentUserContext, event_id]);
 

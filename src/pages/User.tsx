@@ -2,13 +2,14 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import {getUser, unfollowUser, followUser, updateUserNote, getUserGroups} from "../services/API.ts";
 import UserInterface from "../interfaces/UserInterface.ts";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {GroupPreview} from "../components/Groups/GroupPreview.tsx";
 import GroupInterface from "../interfaces/GroupInterface.ts";
 
 export const User = () => {
     const currentUserContext = useContext(UserContext);
     const {username} = useParams();
+    const navigate = useNavigate();
 
     const [user, setUser] = useState<UserInterface>();
     const [groups, setGroups] = useState<GroupInterface[]>();
@@ -16,16 +17,20 @@ export const User = () => {
     const [note, setNote] = useState(user?.contact?.note || "");
 
     useEffect(() => {
-        if (currentUserContext && currentUserContext.accessToken && username) {
+        if (currentUserContext && currentUserContext.loaded && username) {
             currentUserContext.checkTokenStatus();
             getUser(username, currentUserContext.accessToken)
                 .then(data => setUser(data.user))
-                .catch(error => console.error("Error fetching user", error));
+                .catch(error => {
+                    navigate(`/error?code=${error.status}&message=${error.data.msg}`);
+                });
             getUserGroups(username, currentUserContext.accessToken)
                 .then(data => setGroups(data.groups))
-                .catch(error => console.error("Error fetching groups", error));
+                .catch(error => {
+                    navigate(`/error?code=${error.status}&message=${error.data.msg}`);
+                });
         }
-    }, [currentUserContext, username]);
+    }, [currentUserContext, navigate, username]);
 
     const handleFollowToggle = () => {
         if (currentUserContext && currentUserContext.accessToken && user) {

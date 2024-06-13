@@ -17,7 +17,10 @@ export const NewEvent = () => {
     const [group, setGroup] = useState(0);
 
     useEffect(() => {
-        if (currentUserContext && currentUserContext.accessToken && currentUserContext.user) {
+        if (currentUserContext && currentUserContext.loaded) {
+            if (!currentUserContext.user) {
+                navigate(`/error?code=401&message=You must be logged in to view this page`);
+            }
             currentUserContext.checkTokenStatus();
             getGroups(currentUserContext.accessToken)
                 .then(data => {
@@ -27,7 +30,7 @@ export const NewEvent = () => {
                 })
                 .catch(error => console.error("Error fetching groups", error));
         }
-    }, [currentUserContext]);
+    }, [currentUserContext, navigate]);
 
     const handleCreateEvent = () => {
         if (!title.trim()) {

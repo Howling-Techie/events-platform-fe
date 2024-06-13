@@ -3,6 +3,7 @@ import {refreshTokens, registerUser, signUserIn} from "../services/UserManager.j
 import UserInterface from "../interfaces/UserInterface.ts";
 
 interface UserContextType {
+    loaded: boolean,
     user: UserInterface | undefined,
     accessToken: string | undefined,
     refreshToken: string | undefined,
@@ -32,14 +33,15 @@ const UserProvider = ({children}: { children: ReactNode }) => {
     const [accessToken, setAccessToken] = useState<string | undefined>();
     const [refreshToken, setRefreshToken] = useState<string | undefined>();
     const [tokenExpiration, setTokenExpiration] = useState<{ auth: number, refresh: number } | undefined>();
+    const [loaded, setLoaded] = useState(false);
     // Get stored tokens on load
     useEffect(() => {
         const userJson = localStorage.getItem("user");
-        const storedUser: UserInterface = userJson ? JSON.parse(userJson) : null;
+        const storedUser: UserInterface = userJson ? JSON.parse(userJson) : undefined;
         const storedAccessToken = localStorage.getItem("accessToken");
         const storedRefreshToken = localStorage.getItem("refreshToken");
         const tokenExpirationJson = localStorage.getItem("tokenExpiration");
-        const storedTokenExpiration = tokenExpirationJson ? JSON.parse(tokenExpirationJson) : null;
+        const storedTokenExpiration = tokenExpirationJson ? JSON.parse(tokenExpirationJson) : undefined;
 
         if (storedUser && storedAccessToken && storedRefreshToken) {
             setUser(storedUser);
@@ -47,6 +49,7 @@ const UserProvider = ({children}: { children: ReactNode }) => {
             setRefreshToken(storedRefreshToken);
             setTokenExpiration(storedTokenExpiration);
         }
+        setLoaded(true);
     }, []);
 
     // Update stored tokens
@@ -135,6 +138,7 @@ const UserProvider = ({children}: { children: ReactNode }) => {
                 user,
                 accessToken,
                 refreshToken,
+                loaded,
                 setUser,
                 setAccessToken,
                 setRefreshToken,
