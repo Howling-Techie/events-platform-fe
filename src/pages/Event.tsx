@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import EventInterface from "../interfaces/EventInterface.ts";
@@ -109,7 +109,7 @@ export const Event = () => {
                                     <span className="text-gray-500 text-xl">{event.group.name.charAt(0)}</span>
                                 </div>
                             )}
-                            <div className="space-x-2">
+                            <div className="flex flex-col">
                                 <h1 className="text-3xl font-bold">
                                     {visibility} {event.title}
                                 </h1>
@@ -120,7 +120,7 @@ export const Event = () => {
                                 {event.location && (
                                     <p className="text-gray-500 italic">Where: {event.location}</p>
                                 )}
-                                {event.status && event.status.status >= 0 && event.status.status < 4 ? (
+                                {event.status && event.status.status >= 0 && event.status.status < 3 ? (
                                     <button
                                         onClick={handleJoinRequest}
                                         className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
@@ -132,7 +132,7 @@ export const Event = () => {
                                     >
                                         {event.status.status === 0 ? "Cancel Request" : "Leave Event"}
                                     </button>
-                                ) : event.status && event.status.status === 4 ? (
+                                ) : event.status && event.status.status === 3 ? (
                                     <button
                                         disabled
                                         className="mt-2 px-4 py-2 bg-gray-300 text-gray-900 rounded-md"
@@ -149,13 +149,21 @@ export const Event = () => {
                                     </button>
                                 )}
                                 {event.status && event.status.status >= 3 && (
-                                    <a
-                                        href={`/events/${event_id}/invite`}
-                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                                        aria-label="Add users to group"
+                                    <div className="flex-wrap md:space-x-2 grid grid-cols-1 md:grid-cols-2"><Link
+                                        to={`/events/${event_id}/invite`}
+                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex justify-center"
+                                        aria-label="Add users to event"
                                     >
-                                        Add users to group
-                                    </a>
+                                        Add users to event
+                                    </Link>
+                                        <Link
+                                            to={`/events/${event_id}/edit`}
+                                            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex justify-center"
+                                            aria-label="Edit event"
+                                        >
+                                            Edit event
+                                        </Link>
+                                    </div>
                                 )}
                             </div>
                         </header>
