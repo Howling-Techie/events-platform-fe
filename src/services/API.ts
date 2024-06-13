@@ -171,6 +171,20 @@ export const getGroupUsers = async (id: number, accessToken?: string): Promise<{
     });
 };
 
+export const getGroupEvents = async (id: number, accessToken?: string): Promise<{
+    events: EventInterface[]
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: "get",
+        url: `/groups/${id}/events`,
+        ...config,
+    });
+};
+
 export const searchGroupUsers = async (id: number, search: string, accessToken?: string): Promise<{
     users: GroupUserInterface[]
 }> => {
