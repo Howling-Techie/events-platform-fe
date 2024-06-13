@@ -55,7 +55,7 @@ const UserProvider = ({children}: { children: ReactNode }) => {
             localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("refreshToken", refreshToken);
-            localStorage.setItem("tokenExpiration", JSON.stringify(tokenExpiration))
+            localStorage.setItem("tokenExpiration", JSON.stringify(tokenExpiration));
         }
     }, [user, accessToken, refreshToken, tokenExpiration]);
 
@@ -124,9 +124,10 @@ const UserProvider = ({children}: { children: ReactNode }) => {
                     setAccessToken(data.tokens.accessToken);
                     setRefreshToken(data.tokens.refreshToken);
                     setTokenExpiration(data.expiration);
+                    window.location.reload();
                 }, () => signOut());
         }
-    }
+    };
 
     return (
         <UserContext.Provider
