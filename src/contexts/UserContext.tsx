@@ -3,12 +3,12 @@ import {refreshTokens, registerUser, signUserIn} from "../services/UserManager.j
 import UserInterface from "../interfaces/UserInterface.ts";
 
 interface UserContextType {
-    user: UserInterface | null,
-    accessToken: string | null,
-    refreshToken: string | null,
-    setUser: (user: UserInterface | null) => void,
-    setAccessToken: (accessToken: string | null) => void,
-    setRefreshToken: (refreshToken: string | null) => void,
+    user: UserInterface | undefined,
+    accessToken: string | undefined,
+    refreshToken: string | undefined,
+    setUser: (user: UserInterface | undefined) => void,
+    setAccessToken: (accessToken: string | undefined) => void,
+    setRefreshToken: (refreshToken: string | undefined) => void,
     checkTokenStatus: () => void,
     register: (username: string, displayName: string, password: string, email: string) => Promise<{
         success: boolean,
@@ -25,13 +25,13 @@ interface UserContextType {
     signOut: () => void
 }
 
-const UserContext = createContext<UserContextType | null>(null);
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
 const UserProvider = ({children}: { children: ReactNode }) => {
-    const [user, setUser] = useState<UserInterface | null>(null);
-    const [accessToken, setAccessToken] = useState<string | null>(null);
-    const [refreshToken, setRefreshToken] = useState<string | null>(null);
-    const [tokenExpiration, setTokenExpiration] = useState<{ auth: number, refresh: number } | null>(null);
+    const [user, setUser] = useState<UserInterface | undefined>();
+    const [accessToken, setAccessToken] = useState<string | undefined>();
+    const [refreshToken, setRefreshToken] = useState<string | undefined>();
+    const [tokenExpiration, setTokenExpiration] = useState<{ auth: number, refresh: number } | undefined>();
     // Get stored tokens on load
     useEffect(() => {
         const userJson = localStorage.getItem("user");
@@ -106,10 +106,10 @@ const UserProvider = ({children}: { children: ReactNode }) => {
     };
 
     const signOut = () => {
-        setUser(null);
-        setAccessToken(null);
-        setRefreshToken(null);
-        setTokenExpiration(null);
+        setUser(undefined);
+        setAccessToken(undefined);
+        setRefreshToken(undefined);
+        setTokenExpiration(undefined);
 
         localStorage.removeItem("user");
         localStorage.removeItem("accessToken");
