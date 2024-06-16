@@ -10,7 +10,7 @@ export const Users = () => {
     const [users, setUsers] = useState<UserInterface[]>([]);
 
     useEffect(() => {
-        if (currentUserContext && currentUserContext.accessToken) {
+        if (currentUserContext && currentUserContext.loaded) {
             currentUserContext.checkTokenStatus();
             getUsers(currentUserContext.accessToken)
                 .then(data => setUsers(data.users))
@@ -21,14 +21,14 @@ export const Users = () => {
     return (
         <>
             <h1 className="text-2xl font-bold">Users</h1>
-            {users.length === 0 &&
-                <div>Loading Users</div>}
-            {users &&
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+            {!users ?
+                (<div>Loading Users</div>)
+                :
+                (<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
                     {users.map((user) => (
                         <UserPreview key={user.username} user={user}/>
                     ))}
-                </div>
+                </div>)
             }
         </>
     );

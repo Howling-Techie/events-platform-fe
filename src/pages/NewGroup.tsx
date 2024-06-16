@@ -1,4 +1,4 @@
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import {createGroup} from "../services/API.ts";
 import {useNavigate} from "react-router-dom";
@@ -10,6 +10,16 @@ export const NewGroup = () => {
     const [groupName, setGroupName] = useState("");
     const [about, setAbout] = useState("");
     const [visibility, setVisibility] = useState(0);
+
+    useEffect(() => {
+        if (currentUserContext && currentUserContext.loaded) {
+            if (!currentUserContext.user) {
+                navigate(`/error?code=401&message=You must be logged in to view this page`);
+                return;
+            }
+            currentUserContext.checkTokenStatus();
+        }
+    }, [currentUserContext, navigate]);
 
     const handleCreateGroup = () => {
         if (!groupName.trim()) {

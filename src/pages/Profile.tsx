@@ -2,21 +2,27 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import UserInterface from "../interfaces/UserInterface.ts";
 import {getUser, updateUser} from "../services/API.ts";
+import {useNavigate} from "react-router-dom";
 
 export const Profile = () => {
     const currentUserContext = useContext(UserContext);
     const [user, setUser] = useState<UserInterface>();
     const [newPassword, setNewPassword] = useState("");
     const [confirmNewPassword, setConfirmNewPassword] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if (currentUserContext && currentUserContext.user && currentUserContext.accessToken) {
+        if (currentUserContext && currentUserContext.loaded) {
+            if (!currentUserContext.user) {
+                navigate(`/error?code=401&message=You must be logged in to view this page`);
+                return;
+            }
             currentUserContext.checkTokenStatus();
             getUser(currentUserContext.user.username, currentUserContext.accessToken)
                 .then(data => setUser(data.user))
                 .catch(error => console.error("Error fetching user", error));
         }
-    }, [currentUserContext]);
+    }, [currentUserContext, navigate]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {name, value} = e.target;
@@ -65,7 +71,7 @@ export const Profile = () => {
     };
 
     return (
-        <form onSubmit={submitUserUpdate} className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
+        <form onSubmit={submitUserUpdate} className="w-full max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
             <fieldset>
                 <legend className="text-3xl font-bold mb-6 text-center">User Profile</legend>
 

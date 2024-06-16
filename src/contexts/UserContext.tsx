@@ -3,12 +3,13 @@ import {refreshTokens, registerUser, signUserIn} from "../services/UserManager.j
 import UserInterface from "../interfaces/UserInterface.ts";
 
 interface UserContextType {
-    user: UserInterface | null,
-    accessToken: string | null,
-    refreshToken: string | null,
-    setUser: (user: UserInterface | null) => void,
-    setAccessToken: (accessToken: string | null) => void,
-    setRefreshToken: (refreshToken: string | null) => void,
+    loaded: boolean,
+    user: UserInterface | undefined,
+    accessToken: string | undefined,
+    refreshToken: string | undefined,
+    setUser: (user: UserInterface | undefined) => void,
+    setAccessToken: (accessToken: string | undefined) => void,
+    setRefreshToken: (refreshToken: string | undefined) => void,
     checkTokenStatus: () => void,
     register: (username: string, displayName: string, password: string, email: string) => Promise<{
         success: boolean,
@@ -25,21 +26,22 @@ interface UserContextType {
     signOut: () => void
 }
 
-const UserContext = createContext<UserContextType | null>(null);
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
 const UserProvider = ({children}: { children: ReactNode }) => {
-    const [user, setUser] = useState<UserInterface | null>(null);
-    const [accessToken, setAccessToken] = useState<string | null>(null);
-    const [refreshToken, setRefreshToken] = useState<string | null>(null);
-    const [tokenExpiration, setTokenExpiration] = useState<{ auth: number, refresh: number } | null>(null);
+    const [user, setUser] = useState<UserInterface | undefined>();
+    const [accessToken, setAccessToken] = useState<string | undefined>();
+    const [refreshToken, setRefreshToken] = useState<string | undefined>();
+    const [tokenExpiration, setTokenExpiration] = useState<{ auth: number, refresh: number } | undefined>();
+    const [loaded, setLoaded] = useState(false);
     // Get stored tokens on load
     useEffect(() => {
         const userJson = localStorage.getItem("user");
-        const storedUser: UserInterface = userJson ? JSON.parse(userJson) : null;
+        const storedUser: UserInterface = userJson ? JSON.parse(userJson) : undefined;
         const storedAccessToken = localStorage.getItem("accessToken");
         const storedRefreshToken = localStorage.getItem("refreshToken");
         const tokenExpirationJson = localStorage.getItem("tokenExpiration");
-        const storedTokenExpiration = tokenExpirationJson ? JSON.parse(tokenExpirationJson) : null;
+        const storedTokenExpiration = tokenExpirationJson ? JSON.parse(tokenExpirationJson) : undefined;
 
         if (storedUser && storedAccessToken && storedRefreshToken) {
             setUser(storedUser);
@@ -47,6 +49,7 @@ const UserProvider = ({children}: { children: ReactNode }) => {
             setRefreshToken(storedRefreshToken);
             setTokenExpiration(storedTokenExpiration);
         }
+        setLoaded(true);
     }, []);
 
     // Update stored tokens
@@ -106,10 +109,10 @@ const UserProvider = ({children}: { children: ReactNode }) => {
     };
 
     const signOut = () => {
-        setUser(null);
-        setAccessToken(null);
-        setRefreshToken(null);
-        setTokenExpiration(null);
+        setUser(undefined);
+        setAccessToken(undefined);
+        setRefreshToken(undefined);
+        setTokenExpiration(undefined);
 
         localStorage.removeItem("user");
         localStorage.removeItem("accessToken");
@@ -135,6 +138,7 @@ const UserProvider = ({children}: { children: ReactNode }) => {
                 user,
                 accessToken,
                 refreshToken,
+                loaded,
                 setUser,
                 setAccessToken,
                 setRefreshToken,

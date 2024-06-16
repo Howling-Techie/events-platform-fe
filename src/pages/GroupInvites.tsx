@@ -1,11 +1,12 @@
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import UserInterface from "../interfaces/UserInterface.ts";
-import {insertGroupUser, searchUsers} from "../services/API.ts";
-import {useParams} from "react-router-dom";
+import {getGroup, insertGroupUser, searchUsers} from "../services/API.ts";
+import {useNavigate, useParams} from "react-router-dom";
 
 export const GroupInvites = () => {
     const currentUserContext = useContext(UserContext);
+    const navigate = useNavigate();
     const {group_id} = useParams();
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -13,10 +14,20 @@ export const GroupInvites = () => {
     const [selectedUsers, setSelectedUsers] = useState<Set<number>>(new Set());
 
     useEffect(() => {
-        if (currentUserContext && currentUserContext.accessToken) {
+        if (currentUserContext && currentUserContext.loaded && group_id) {
             currentUserContext.checkTokenStatus();
+            getGroup(+group_id, currentUserContext.accessToken)
+                .then((data) => {
+                    if (!data.group.user_access_level || data.group.user_access_level < 2) {
+                        navigate(`/error?code=401&message="You are not authorised to view this page"`);
+                        return;
+                    }
+                })
+                .catch(error => {
+                    navigate(`/error?code=${error.status}&message=${error.data.msg}`);
+                });
         }
-    }, [currentUserContext]);
+    }, [currentUserContext, group_id, navigate]);
 
     const handleSearch = async () => {
         if (currentUserContext && currentUserContext.accessToken) {

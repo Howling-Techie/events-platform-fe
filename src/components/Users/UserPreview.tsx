@@ -1,4 +1,5 @@
 import UserInterface from "../../interfaces/UserInterface.ts";
+import {Link} from "react-router-dom";
 
 interface UserPreviewProps {
     user: UserInterface;
@@ -6,9 +7,9 @@ interface UserPreviewProps {
 
 export const UserPreview = ({user}: UserPreviewProps) => {
     return (
-        <a
+        <Link
             className="border rounded-lg p-4 flex flex-col items-center bg-white shadow-md cursor-pointer"
-            href={`/users/${user.username}`}
+            to={`/users/${user.username}`}
         >
             <div className="flex items-center mb-4">
                 {user.avatar ? (
@@ -24,6 +25,6 @@ export const UserPreview = ({user}: UserPreviewProps) => {
                 </div>
             </div>
             <p className="text-gray-600 text-sm text-center line-clamp-2">{user.about}</p>
-        </a>
+        </Link>
     );
 };

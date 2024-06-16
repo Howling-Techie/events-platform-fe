@@ -18,23 +18,28 @@ export const EditGroup = () => {
     const [visibility, setVisibility] = useState(0);
 
     useEffect(() => {
-        if (currentUserContext && currentUserContext.accessToken && group_id) {
+        if (currentUserContext && currentUserContext.loaded && group_id) {
             currentUserContext.checkTokenStatus();
             getGroup(+group_id, currentUserContext.accessToken)
                 .then((data) => {
+                    if (!data.group.user_access_level || data.group.user_access_level < 2) {
+                        navigate(`/error?code=401&message=You are not authorised to view this page`);
+                    }
                     setGroup(data.group);
                     setName(data.group.name);
                     setAbout(data.group.about);
                     setVisibility(data.group.visibility);
                 })
-                .catch(error => console.error("Error fetching group", error));
+                .catch(error => {
+                    navigate(`/error?code=${error.status}&message=${error.data.msg}`);
+                });
             getGroupUsers(+group_id, currentUserContext.accessToken)
                 .then((data) => {
                     setGroupUsers(data.users);
                 })
                 .catch(error => console.error("Error fetching group", error));
         }
-    }, [currentUserContext, group_id]);
+    }, [currentUserContext, group_id, navigate]);
 
     const handleUpdateGroup = () => {
         if (!group || !currentUserContext || !currentUserContext.accessToken)
@@ -150,7 +155,7 @@ export const EditGroup = () => {
 
     return (
         <>
-            <section className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
+            <section className="w-full max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
                 <h1 className="text-3xl font-bold mb-6 text-center">Edit Group</h1>
                 {group && (
                     <form>
