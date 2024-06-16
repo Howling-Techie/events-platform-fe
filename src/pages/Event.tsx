@@ -185,7 +185,7 @@ export const Event = () => {
                         currentUserContext &&
                         currentUserContext.user &&
                         event.status.status >= 1 && (
-                            <section className="max-w-2xl mx-auto p-4 mt-4 bg-white shadow-md rounded-lg">
+                            <section className="max-w-2xl mx-auto p-4 mt-4 bg-white shadow-md rounded-lg min-w-full">
                                 <EventPayment
                                     eventId={event.id}
                                     price={event.price}
