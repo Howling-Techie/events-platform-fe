@@ -42,7 +42,7 @@ export const NewGroup = () => {
     };
 
     return (
-        <div className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
+        <div className="min-w-full max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
             <h1 className="text-3xl font-bold mb-6 text-center">Create New Group</h1>
             <div className="mb-4">
                 <label htmlFor="groupName" className="block text-gray-700 font-bold mb-2">
