@@ -118,7 +118,6 @@ export const Home = () => {
                     </section>
                 </main>
             </div>
-            )
         </>
     );
 };
