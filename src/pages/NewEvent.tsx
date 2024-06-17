@@ -12,6 +12,9 @@ export const NewEvent = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [location, setLocation] = useState("");
+    const [isFree, setIsFree] = useState(true);
+    const [price, setPrice] = useState<number>(0);
+    const [payWhatYouWant, setPayWhatYouWant] = useState(false);
     const [startTime, setStartTime] = useState("");
     const [visibility, setVisibility] = useState(0);
     const [group, setGroup] = useState(0);
@@ -25,6 +28,9 @@ export const NewEvent = () => {
             getGroups(currentUserContext.accessToken)
                 .then(data => {
                     const groupData = data.groups.filter(g => g.owner_id === currentUserContext.user?.id || g.user_access_level && g.user_access_level > 2);
+                    if (groupData.length === 0) {
+                        navigate(`/error?code=401&message=You must be at least a moderator in at least one group to create an event`);
+                    }
                     setGroups(groupData);
                     setGroup(groupData[0].id);
                 })
@@ -48,7 +54,9 @@ export const NewEvent = () => {
             visibility,
             location,
             start_time: startTime,
-            group_id: group
+            group_id: group,
+            price: isFree ? 0 : price,
+            pay_what_you_want: payWhatYouWant,
         };
 
         // Go to new event page after creating the event
@@ -61,7 +69,7 @@ export const NewEvent = () => {
     };
 
     return (
-        <div className="max-w-xl mx-auto p-4 bg-white shadow-md rounded-lg">
+        <div className="max-w-xl min-w-full mx-auto p-4 bg-white shadow-md rounded-lg">
             <h1 className="text-3xl font-bold mb-6 text-center">Create New Event</h1>
             <div className="mb-4">
                 <label htmlFor="title" className="block text-gray-700 font-bold mb-2">
@@ -156,6 +164,54 @@ export const NewEvent = () => {
                     aria-label="Event Location"
                 />
             </div>
+            <div className="mb-4">
+                <label htmlFor="isFree" className="block text-gray-700 font-bold mb-2">
+                    Is the Event Free?
+                </label>
+                <input
+                    id="isFree"
+                    type="checkbox"
+                    checked={isFree}
+                    onChange={(e) => setIsFree(e.target.checked)}
+                    className="mr-2"
+                />
+                <label htmlFor="isFree" className="text-gray-700">
+                    Yes
+                </label>
+            </div>
+            {!isFree && (
+                <>
+                    <div className="mb-4">
+                        <label htmlFor="price" className="block text-gray-700 font-bold mb-2">
+                            Event Price
+                        </label>
+                        <input
+                            id="price"
+                            type="number"
+                            value={price}
+                            onChange={(e) => setPrice(parseFloat(e.target.value))}
+                            className="w-full p-2 border rounded-md"
+                            placeholder="Enter event price"
+                            aria-label="Event Price"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="payWhatYouWant" className="block text-gray-700 font-bold mb-2">
+                            Allow Pay What You Want?
+                        </label>
+                        <input
+                            id="payWhatYouWant"
+                            type="checkbox"
+                            checked={payWhatYouWant}
+                            onChange={(e) => setPayWhatYouWant(e.target.checked)}
+                            className="mr-2"
+                        />
+                        <label htmlFor="payWhatYouWant" className="text-gray-700">
+                            Yes
+                        </label>
+                    </div>
+                </>
+            )}
             <div className="mb-4">
                 <label htmlFor="startTime" className="block text-gray-700 font-bold mb-2">
                     Event Start Time
