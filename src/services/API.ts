@@ -78,6 +78,18 @@ export const getUserGroups = async (username: string, accessToken?: string): Pro
     });
 };
 
+export const getUserEvents = async (username: string, accessToken?: string): Promise<{ events: EventInterface[] }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: "get",
+        url: `/users/${username}/events`,
+        ...config,
+    });
+};
+
 //  UPDATE
 export const updateUser = async (user: UserInterface, accessToken: string): Promise<{ user: UserInterface }> => {
     const config: AxiosRequestConfig = accessToken
