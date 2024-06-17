@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import UserInterface from "../interfaces/UserInterface.ts";
 import {getGroup, insertGroupUser, searchUsers} from "../services/API.ts";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 
 export const GroupInvites = () => {
     const currentUserContext = useContext(UserContext);
@@ -82,6 +82,13 @@ export const GroupInvites = () => {
                     Search
                 </button>
             </div>
+            <Link
+                to={`/groups/${group_id}`}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                aria-label="Go Back"
+            >
+                Go Back
+            </Link>
             <div className="mb-4">
                 {searchResults.map((user) => (
                     <div key={user.id} className="flex items-center mb-2">

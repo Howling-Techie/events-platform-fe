@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import UserInterface from "../interfaces/UserInterface.ts";
 import {getEvent, insertEventUser, searchGroupUsers} from "../services/API.ts";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import EventInterface from "../interfaces/EventInterface.ts";
 
 export const EventInvites = () => {
@@ -82,6 +82,13 @@ export const EventInvites = () => {
                     Search
                 </button>
             </div>
+            <Link
+                to={`/events/${event_id}`}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                aria-label="Go Back"
+            >
+                Go Back
+            </Link>
             <div className="mb-4">
                 <ul>
                     {searchResults.map((user) => (

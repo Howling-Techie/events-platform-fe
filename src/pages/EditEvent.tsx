@@ -1,4 +1,4 @@
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import {deleteEventUser, getEvent, getEventUsers, updateEvent, updateEventUser} from "../services/API.ts";
@@ -19,6 +19,7 @@ export const EditEvent = () => {
     const [startTime, setStartTime] = useState("");
     const [visibility, setVisibility] = useState(0);
     const [pastStartTime, setPastStartTime] = useState(false);
+    const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
         if (currentUserContext && event_id && currentUserContext.loaded) {
@@ -59,7 +60,7 @@ export const EditEvent = () => {
             alert("Event start time must be in the future");
             return;
         }
-
+        setUpdating(true);
         const updatedEvent: EventInterface = {
             ...event,
             title,
@@ -73,7 +74,10 @@ export const EditEvent = () => {
                 alert("Event updated successfully");
                 navigate(`/events/${event_id}`);
             })
-            .catch(error => alert(`Error updating event: ${error.data.msg}`));
+            .catch(error => {
+                navigate(`/error?code=${error.status}&message=${error.data.msg}`);
+                setUpdating(false);
+            });
     };
 
     const handleApproveRequest = (userId: number) => {
@@ -165,6 +169,14 @@ export const EditEvent = () => {
             .catch(error => alert(`Error updating user: ${error.data.msg}`));
     };
 
+    if (!event) {
+        return (
+            <>
+                <h1 className="text-2xl font-bold">{event_id}</h1>
+                <div>Loading Event Details</div>
+            </>);
+    }
+
     return (
         <>
             <section className="max-w-xl w-full mx-auto p-4 bg-white shadow-md rounded-lg">
@@ -245,15 +257,23 @@ export const EditEvent = () => {
                         <button
                             type="button"
                             onClick={handleUpdateEvent}
-                            className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+                            className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600 disabled:bg-green-800"
                             aria-label="Update Event"
+                            disabled={updating}
                         >
-                            Update
+                            {updating ? "Updating" : "Update"}
                         </button>
+                        <Link
+                            to={`/events/${event.id}`}
+                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 flex justify-center mt-4"
+                            aria-label="Go Back"
+                        >
+                            Go Back
+                        </Link>
                     </form>
                 )}
             </section>
-            {eventUsers && (
+            {(eventUsers && event) && (
                 <section className="mt-2">
                     <EventUserManager
                         eventUsers={eventUsers}
@@ -262,7 +282,7 @@ export const EditEvent = () => {
                         onKickUser={handleKickUser}
                         onPromoteToModerator={handlePromoteToModerator}
                         onDemoteToUser={handleDemoteToUser}
-                        free={event?.price === 0}
+                        free={!(event.price > 0)}
                     />
                 </section>
             )}

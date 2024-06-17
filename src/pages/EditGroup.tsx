@@ -1,4 +1,4 @@
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../contexts/UserContext.tsx";
 import {deleteGroupUser, getGroup, getGroupUsers, updateGroup, updateGroupUser} from "../services/API.ts";
@@ -16,6 +16,7 @@ export const EditGroup = () => {
     const [name, setName] = useState("");
     const [about, setAbout] = useState("");
     const [visibility, setVisibility] = useState(0);
+    const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
         if (currentUserContext && currentUserContext.loaded && group_id) {
@@ -48,7 +49,7 @@ export const EditGroup = () => {
             alert("Name cannot be empty");
             return;
         }
-
+        setUpdating(true);
         const updatedGroup: GroupInterface = {
             ...group,
             name,
@@ -60,7 +61,10 @@ export const EditGroup = () => {
                 alert("Group updated successfully");
                 navigate(`/groups/${group_id}`);
             })
-            .catch(error => console.error("Error updating group", error));
+            .catch(error => {
+                navigate(`/error?code=${error.status}&message=${error.data.msg}`);
+                setUpdating(false);
+            });
     };
 
 
@@ -74,7 +78,7 @@ export const EditGroup = () => {
                     const userIndex = newState.findIndex(u => u.user.id == userId);
                     newState[userIndex] = {
                         ...newState[userIndex],
-                        user_access: data.status.access_level
+                        user_access_level: data.status.access_level
                     };
                     return newState;
                 }
@@ -125,7 +129,7 @@ export const EditGroup = () => {
                     const userIndex = newState.findIndex(u => u.user.id == userId);
                     newState[userIndex] = {
                         ...newState[userIndex],
-                        user_access: data.status.access_level
+                        user_access_level: data.status.access_level
                     };
                     return newState;
                 }
@@ -144,7 +148,7 @@ export const EditGroup = () => {
                     const userIndex = newState.findIndex(u => u.user.id == userId);
                     newState[userIndex] = {
                         ...newState[userIndex],
-                        user_access: data.status.access_level
+                        user_access_level: data.status.access_level
                     };
                     return newState;
                 }
@@ -152,6 +156,14 @@ export const EditGroup = () => {
         })
             .catch(error => console.error("Error updating user", error));
     };
+
+    if (!group) {
+        return (
+            <>
+                <h1 className="text-2xl font-bold">{group_id}</h1>
+                <div>Loading Group Details</div>
+            </>);
+    }
 
     return (
         <>
@@ -205,11 +217,19 @@ export const EditGroup = () => {
                         <button
                             type="button"
                             onClick={handleUpdateGroup}
-                            className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+                            className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600 disabled:bg-green-800"
                             aria-label="Update Group"
+                            disabled={updating}
                         >
-                            Update
+                            {updating ? "Updating" : "Update"}
                         </button>
+                        <Link
+                            to={`/groups/${group.id}`}
+                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 flex justify-center mt-4"
+                            aria-label="Go Back"
+                        >
+                            Go Back
+                        </Link>
                     </form>
                 )}
             </section>
