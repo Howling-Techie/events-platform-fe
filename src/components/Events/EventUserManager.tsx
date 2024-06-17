@@ -1,6 +1,7 @@
 import UserInterface, {EventUserInterface} from "../../interfaces/UserInterface.ts";
 import {FaUser, FaCheck, FaTimes, FaArrowUp, FaArrowDown, FaUserTimes, FaUserShield} from "react-icons/fa";
 import {useState} from "react";
+import {FaXmark} from "react-icons/fa6";
 
 interface EventUserManagerProps {
     eventUsers: EventUserInterface[];
@@ -9,6 +10,7 @@ interface EventUserManagerProps {
     onKickUser: (userId: number) => void;
     onPromoteToModerator: (userId: number) => void;
     onDemoteToUser: (userId: number) => void;
+    free: boolean;
 }
 
 export const EventUserManager = ({
@@ -18,6 +20,7 @@ export const EventUserManager = ({
                                      onKickUser,
                                      onPromoteToModerator,
                                      onDemoteToUser,
+                                     free,
                                  }: EventUserManagerProps) => {
     const [search, setSearch] = useState("");
     const [sortKey, setSortKey] = useState<keyof UserInterface | "user_access">("username");
@@ -95,6 +98,7 @@ export const EventUserManager = ({
                         <th scope="col" className="border p-2 cursor-pointer"
                             onClick={() => handleSort("user_access")}>Status
                         </th>
+                        {!free && <th scope="col" className="border p-2">Paid</th>}
                         <th scope="col" className="border p-2">Actions</th>
                     </tr>
                     </thead>
@@ -112,6 +116,9 @@ export const EventUserManager = ({
                             <td className="border p-2">{eventUser.user.username}</td>
                             <td className="border p-2">{eventUser.user.display_name}</td>
                             <td className="border p-2">{getStatusIcon(eventUser.status.status)}</td>
+                            {!free && <td className="border p-2">{eventUser.status.paid ? <><FaCheck
+                                className="text-green-500 inline"/> £{eventUser.status.amount_paid}</> : <><FaXmark
+                                className="text-red-500 inline"/> Not Paid</>}</td>}
                             <td className="border p-2">
                                 {eventUser.status.status === 0 && (
                                     <>

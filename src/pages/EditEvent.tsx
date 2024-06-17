@@ -262,6 +262,7 @@ export const EditEvent = () => {
                         onKickUser={handleKickUser}
                         onPromoteToModerator={handlePromoteToModerator}
                         onDemoteToUser={handleDemoteToUser}
+                        free={event?.price === 0}
                     />
                 </section>
             )}
