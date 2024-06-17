@@ -1,30 +1,89 @@
-# React + TypeScript + Vite
+# Events Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This is a project for allowing for the managing and creating events for groups, with options to set up payments,
+locations, and google calendar integration.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Frontend
 
-## Expanding the ESLint configuration
+The frontend component is built with React Native and can be found
+at [Events Platform Frontend](https://github.com/Howling-Techie/events-platform-fe). To set up the
+frontend, follow these steps:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Clone the repository:
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```
+git clone gh repo clone Howling-Techie/events-platform-fe
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Install dependencies:
+
+```
+npm install;
+npm run build;
+```
+
+3. Create a `.env` file in the root directory and add the following variables:
+
+```
+VITE_API_URL=[URL to the backend API]
+VITE_STRIPE_PUBLISHABLE_KEY=[Stripe publishable key for the client side]
+```
+
+4. Run the application:
+
+```
+vite preview --host
+```
+
+## Backend
+
+The backend component is implemented using Express.js and can be found
+at [Events Platform Backend](https://github.com/Howling-Techie/Events-Platform-BE). To set up the backend, follow these
+steps:
+
+1. Clone the repository:
+
+```
+git repo clone Howling-Techie/Events-Platform-BE
+```
+
+2. Install dependencies:
+
+```
+npm install
+```
+
+3. Create a ```.env``` file in the root directory and add the following variables:
+
+```
+GOOGLE_APPLICATION_CREDENTIALS=[google_credentials.json]
+GOOGLE_CALENDAR_ID=[ID for the google calendar events should be added to. The credentials provided above should have read/write credentials to this]
+STRIPE_SECRET=[Stripe secret API key]
+JWT_[Unique key for generating JWT tokens]
+PORT=[Port the server will listen on]
+PATH_URL=[If this is hosted on a subdirectory, eg www.site.com/events]
+DATABASE_HOST=[Database Host URL]
+DATABASE_PORT=[Database Host Port]
+DATABASE_NAME=[Database Host database Name]
+DATABASE_USER=[Database Host Username]
+DATABASE_PASS=[Database Host Password]
+DB_CERT=[If the database requires a certificate]
+```
+
+4. Run the application:
+
+```
+npm run start
+```
+
+## Tech Stack
+
+This project was built using Typescript, Vite, and React for the frontend, with Tailwind used for styling.
+
+For the backend, an express.js server written in javascript has been used.
+
+## Demo
+
+To see the project in action, visit the [demonstration site on Render.](https://events-platform-fe.onrender.com/)
